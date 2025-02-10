@@ -13,6 +13,10 @@ public class UserService {
     private UserRepository repo;
 
 
+    public User loginUser(String identifier) {
+        repo.findByUsernameOrEmail(identifier, identifier);
+        return null;
+    }
     public void saveUser(User user) {
         repo.save(user); // Just save the user, no return needed
     }

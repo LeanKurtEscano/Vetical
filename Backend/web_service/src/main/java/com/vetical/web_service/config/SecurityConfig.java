@@ -23,13 +23,27 @@ public class SecurityConfig {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    // ✅ Define BCryptPasswordEncoder as a Bean
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(12);
+    }
+
+
+
     @Bean
     public AuthenticationProvider authProvider(){
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
-        provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
+        provider.setPasswordEncoder(new BCryptPasswordEncoder(12)); // Use the same encoder
         return provider;
+    }
 
+
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 
     @Bean
@@ -43,15 +57,14 @@ public class SecurityConfig {
                     config.setAllowCredentials(true);
                     return config;
                 }))
-                .csrf(csrf -> csrf.disable()); 
+                .csrf(csrf -> csrf.disable()) // Disable CSRF for API authentication
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Set to stateless for JWT
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/login", "/auth/register").permitAll() // Allow these without authentication
+                        .anyRequest().authenticated() // Secure all other endpoints
+                )
+                .authenticationProvider(authProvider()); // Set the authentication provider
 
         return http.build();
     }
-
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
-
 }

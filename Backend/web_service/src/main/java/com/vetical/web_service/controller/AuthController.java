@@ -1,19 +1,22 @@
 package com.vetical.web_service.controller;
 
 import com.vetical.web_service.model.User;
+import com.vetical.web_service.service.JwtService;
 import com.vetical.web_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("auth")
@@ -25,6 +28,9 @@ public class AuthController {
     @Autowired
     AuthenticationManager authenticationManager;
 
+
+    @Autowired
+    JwtService jwtService;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     @PostMapping("/register")
@@ -37,21 +43,32 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user) {
-        try {
-            Authentication auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
-            );
+    public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
+        String identifier = loginRequest.get("username"); // Can be email or username
+        String rawPassword = loginRequest.get("password");
 
-            if (auth.isAuthenticated()) {
-                return ResponseEntity.status(HttpStatus.OK).body("Login Successful");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+        // ✅ Find user by username or email
+        User user = service.loginUser(identifier);
+
+        // ✅ Validate password
+        if (!encoder.matches(rawPassword, user.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Invalid email or password"));
         }
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Request");
+        // ✅ Generate JWT token
+        String token = jwtService.generateToken(user.getUsername());
+
+        // ✅ Return structured response
+        return ResponseEntity.ok(Map.of(
+                "message", "Login successful",
+                "token", token
+        ));
     }
+
+
+
+
 
 
 }

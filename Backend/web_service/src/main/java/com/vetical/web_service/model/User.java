@@ -1,28 +1,27 @@
 package com.vetical.web_service.model;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
 @Entity
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)
     private String address;
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
     private String phoneNumber;
-
-    @Column(nullable = false)
-    private String password;
 
     public String getAddress() {
         return address;
@@ -71,4 +70,7 @@ public class User {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    @Column(nullable = false)
+    private String password;
 }
