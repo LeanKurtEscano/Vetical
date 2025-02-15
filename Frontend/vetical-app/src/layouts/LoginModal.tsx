@@ -4,21 +4,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash,faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useMyContext } from '../context/MyContext';
 import { Link } from 'react-router-dom';
-
+import { loginAuth } from '../services/auth';
 import logo from '../assets/dogl.png';
-import axios from 'axios';
-
 
 
 const LoginModal: React.FC = () => {
     const [show, setShow] = useState(false);
-    const { setIsAuthenticated, setToggleModals } = useMyContext();
+    const {  setToggleModals } = useMyContext();
     const [loading, setLoading] = useState(false)
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
-    const apiUrl = import.meta.env.VITE_API_URL;
+
   
     const toggleIcon = () => {
         setShow(!show);
@@ -31,49 +29,52 @@ const LoginModal: React.FC = () => {
       }))
     }
 
-    const loginSubmit = async (e: React.FormEvent) => {
+    const loginSubmit = async(e: React.FormEvent) => {
         e.preventDefault();
         setEmailError("");
         setPasswordError("");
         setLoading(true);
+
+      const data = {
+        email:email,
+        password: password
+      }
         try {
-            const response = await axios.post(`${apiUrl}/login/`, {
-                email: email,
-                password: password
-            }, {
-                headers: {
-                    "Content-Type": 'application/json'
-                }
-            });
+            const response = await loginAuth(data);
 
             if (response.data.success) {
-                setIsAuthenticated(true);
-                setLoading(false);
-                const { access, refresh } = response.data;
-                localStorage.setItem("access_token", access);
-                localStorage.setItem("refresh_token", refresh);
+                console.log("success");
             }
 
         } catch (error: any) {
-            setLoading(false);
-            if (error.response) {
-                const { data } = error.response;
-                if (data.Pass) {
-                    setPasswordError(data.Pass);
-                    return;
-                }
+          setLoading(false);
+      
+          if (error.response) {
+              const { data, status } = error.response;
+      
+              
+              if (status === 401) {
+                  setPasswordError(data.error);
+                  return;
+              }
 
-                if (data.Email) {
-                    setEmailError(data.Email);
-                    return;
-                }
-
-                if (data.Invalid) {
-                    alert("Please fill out all fields");
-                    return;
-                }
+              if (status === 404) {
+                setEmailError(data.error);
+                return;
             }
-        }
+      
+        
+      
+              if (status === 500) {
+                  alert("Server error: Please try again later");
+                  return;
+              }
+          } else {
+              alert("Network error: Please check your connection");
+          }
+      }
+      
+        
 
     };
 

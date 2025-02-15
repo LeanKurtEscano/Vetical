@@ -18,29 +18,28 @@ logger = logging.getLogger(__name__)
 @api_view(["POST"])
 def user_login(request):
     try:
-        email = request.data.get("email")
-        password = request.data.get("password")
+        
+        data = request.data.get("data")
+        print(data)
+        email = data['email']
+        password = data['password']
         
         if not email or not password:
-            return Response({"invalid":"Please fill out all fields"},  status= status.HTTP_400_BAD_REQUEST)
+            return Response({"error":"Please fill out all fields"},  status= status.HTTP_400_BAD_REQUEST)
         
         user = User.objects.filter(email = email).first()
         
         if not user:
-            return Response({"email": "Email is not registered"}, status= status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Email is not registered"}, status= status.HTTP_404_NOT_FOUND)
         
         username = user.username
         
         user_auth = authenticate(request, username=username, password=password)
         
         if not user_auth:
-            return Response({"password": "Incorrect Password"}, status = status.HTTP_401_UNAUTHORIZED)
-        
-        get_token = RefreshToken.for_user(user_auth)
-        
-        return Response({"success": "User have successfully login",
-                         "access_token": str(get_token.access_token),
-                         "refresh_token": str(get_token)}, status= status.HTTP_200_OK)
+            return Response({"error": "Incorrect Password"}, status = status.HTTP_401_UNAUTHORIZED)
+            
+        return Response({"success": "Verified Credentials"}, status= status.HTTP_200_OK)
     except Exception as e:
         print(e)
         return Response({"error": "Network Error"}, status= status.HTTP_500_INTERNAL_SERVER_ERROR)
