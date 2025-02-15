@@ -1,1 +1,7 @@
 @import "tailwindcss";
+.custom-carousel-container {
+    width: 100%;
+    max-width: 1400px; /* Adjust as needed */
+    margin: 0 auto;
+    overflow: visible !important;
+}

@@ -4,7 +4,7 @@ import './App.css'
 import { useMyContext } from './context/MyContext';
 import { MyProvider } from './context/MyContext';
 import Login from './sections/Login';
-
+import Home from './sections/Home';
 
 function App() {
   return (
@@ -24,6 +24,8 @@ const Main:React.FC = () => {
     {toggleLog && (
       <Login />
     )}
+    <Home />
+    
     
    
    
