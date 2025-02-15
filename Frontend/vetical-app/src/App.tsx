@@ -1,15 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
+import Navbar from './layouts/NavBar'
 import './App.css'
+import { useMyContext } from './context/MyContext';
+import { MyProvider } from './context/MyContext';
+import Login from './sections/Login';
+
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
+    <MyProvider>
+      <Main />
+    </MyProvider>
+  );
+}
+
+const Main:React.FC = () => {
+  const {toggleLog} = useMyContext();
+  
+  return (
+  
     <>
-      <p className=' text-[#fd5c63]'>JDsaddasda</p>
+    <Navbar />
+    {toggleLog && (
+      <Login />
+    )}
+    
+   
+   
     </>
+    
   )
 }
 
