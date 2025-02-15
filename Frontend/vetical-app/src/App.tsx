@@ -5,7 +5,7 @@ import { useMyContext } from './context/MyContext';
 import { MyProvider } from './context/MyContext';
 import Login from './sections/Login';
 import Home from './sections/Home';
-
+import LoginModal from './layouts/LoginModal';
 function App() {
   return (
     <MyProvider>
@@ -15,15 +15,20 @@ function App() {
 }
 
 const Main:React.FC = () => {
-  const {toggleLog} = useMyContext();
+  const {toggleModals} = useMyContext();
   
   return (
   
     <>
     <Navbar />
-    {toggleLog && (
+    {toggleModals.toggleLogin && (
       <Login />
     )}
+
+{toggleModals.toggleLoginModal && (
+      <LoginModal />
+    )}
+
     <Home />
     
     

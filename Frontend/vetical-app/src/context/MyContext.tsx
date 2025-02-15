@@ -7,6 +7,11 @@ interface UserDetails {
   email:string
 }
 
+interface HandleModal {
+  toggleLogin: boolean;
+  toggleLoginModal: boolean;
+  toggleEmailModal: boolean;
+}
 
 
 const MyContext = createContext<any>(null);
@@ -20,12 +25,17 @@ export const MyProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   const [sessionExpired, setSessionExpired] = useState(false);
   const [toggleLog , setToggleLog] = useState(false);
   const [toggleSesh, setToggleSesh] = useState(false);
+  const [toggleModals , setToggleModals] = useState<HandleModal> ({
+    toggleLogin: false,
+    toggleEmailModal: false,
+    toggleLoginModal:false
+  })
 
 
 
 
   return (
-    <MyContext.Provider value={{ isAuthenticated, setIsAuthenticated,userDetails, setUserDetails, toggleLog , setToggleLog,sessionExpired,setSessionExpired,toggleSesh,setToggleSesh}}>
+    <MyContext.Provider value={{ isAuthenticated,toggleModals,setToggleModals, setIsAuthenticated,userDetails, setUserDetails, toggleLog , setToggleLog,sessionExpired,setSessionExpired,toggleSesh,setToggleSesh}}>
       {children}
     </MyContext.Provider>
   );

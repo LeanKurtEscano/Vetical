@@ -6,15 +6,34 @@ import GoogleButton from '../components/Googlebutton';
 import { useMyContext } from '../context/MyContext';
 
 const Login: React.FC = () => {
-    const { setIsAuthenticated,toggleLog, setToggleLog } = useMyContext();
+    const { setToggleModals} = useMyContext();
     const [loading, setLoading] = useState(false)
-
+    
     const apiUrl = import.meta.env.VITE_API_URL;
   
     const closeLogin = () => {
-        setToggleLog(!toggleLog);
+        setToggleModals((prev: { toggleLogin: any; }) => ({
+          ...prev,
+          toggleLogin: false,
+        
+
+        }))
+        console.log("dasdsda");
     }
- 
+
+
+    const showLoginModal = () => {
+      setToggleModals((prev: {toggleLoginModal: any;}) => ({
+        ...prev,
+        toggleLoginModal : true
+      }))
+
+      setToggleModals((prev: { toggleLogin: any; }) => ({
+        ...prev,
+        toggleLogin: false
+
+      }))
+    }
     return (
       <section className="h-screen w-full fixed inset-0 flex justify-center items-center bg-gray-500/50  z-50">
   <div className="relative flex flex-col p-6 bg-white border-1 border-amber-500 rounded-lg shadow-2xl w-96">
@@ -34,7 +53,7 @@ const Login: React.FC = () => {
   
     <div className="flex flex-col">
       <button
-        type="submit"
+        onClick={showLoginModal}
         className="bg-gradient-to-r cursor-pointer from-orange-600 to-orange-400 mt-2 text-white rounded p-2 hover:from-orange-600 hover:to-orange-800 transition duration-300 flex justify-center items-center"
         disabled={loading}
       >

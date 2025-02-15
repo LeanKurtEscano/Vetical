@@ -6,10 +6,15 @@ import { useMyContext } from '../context/MyContext';
 
 const Navbar: React.FC = () => {
     const [toggleNav, setToggleNav] = useState(false);
-    const { toggleLog, setToggleLog, isAuthenticated } = useMyContext();
+    const {setToggleModals,toggleModals } = useMyContext();
+
+ 
 
     const showNav = () => setToggleNav(!toggleNav);
-    const showLogin = () => setToggleLog(!toggleLog);
+    const showLogin = () => setToggleModals((prev:{toggleLogin:any}) => ({
+        ...prev,
+        toggleLogin: true,
+    }));
 
     return (
         <nav className="bg-customWhite">
