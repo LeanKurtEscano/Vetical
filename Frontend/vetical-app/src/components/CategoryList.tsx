@@ -8,20 +8,20 @@ import {
   faDove, 
   faFish, 
   faPaw, 
-  faHorse, 
+  faDragon, 
   faSpider 
 } from '@fortawesome/free-solid-svg-icons';
 
 const categories = [
   { id: 1, name: 'Dogs', icon: faDog },
   { id: 2, name: 'Cats', icon: faCat },
-  { id: 3, name: 'Reptiles', icon: faFrog },
+  { id: 3, name: 'Amphibians', icon: faFrog },
   { id: 4, name: 'Mammals', icon: faOtter },
   { id: 5, name: 'Birds', icon: faDove },
   { id: 6, name: 'Fish', icon: faFish },
   { id: 7, name: 'Rodents', icon: faPaw },
   { id: 9, name: 'Insects', icon: faSpider },
-  { id: 10, name: 'Amphibians', icon: faFrog },
+  { id: 10, name: 'Reptiles', icon: faDragon },
 
 ];
 

@@ -4,7 +4,7 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 const Search: React.FC = () => {
     return (
-        <div className="flex items-center justify-center p-4">
+        <div className="flex w-1/2 relative items-center justify-center p-4">
             <div className="bg-white border border-gray-300 shadow-lg shadow-gray-400/50 rounded-full flex w-full max-w-xl">
                 <input
                     type="text"
