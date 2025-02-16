@@ -37,7 +37,7 @@ const OtpVerification = () => {
   return (
     <section className="h-screen w-full fixed inset-0 flex justify-center items-center bg-gray-500/50 z-50">
     <div className="relative flex flex-col p-6 z-20 border-orange-500 bg-white border-2 rounded-lg shadow-2xl w-[500px]">
-      {/* Header with Back and Close Icons */}
+    
       <div className="flex justify-between items-center mb-4">
         <button onClick={goBack} className="text-gray-500 hover:text-gray-700">
           <FontAwesomeIcon icon={faArrowLeft} className="text-lg" />
@@ -47,22 +47,21 @@ const OtpVerification = () => {
         </button>
       </div>
   
-      {/* Logo */}
+     
       <div className="flex justify-center mb-4">
         <img src="/logo.png" alt="Logo" className="h-12" />
       </div>
   
-      {/* Title */}
+     
       <h2 className="text-xl font-semibold text-center">
         Enter the 6-digit OTP code sent to your email
       </h2>
   
-      {/* Subheading */}
       <p className="text-sm text-gray-500 text-center mt-1">
         We'll verify your account
       </p>
   
-      {/* OTP Input Form */}
+     
       <form className="flex flex-col mt-4" onSubmit={otpSubmit}>
         <label htmlFor="otp" className="block text-sm font-medium text-gray-700">
           OTP Code:
@@ -88,7 +87,7 @@ const OtpVerification = () => {
         </button>
       </form>
   
-      {/* Sign Up Link */}
+      
      
     </div>
   </section>
