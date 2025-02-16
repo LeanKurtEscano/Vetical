@@ -7,7 +7,7 @@ import { useMyContext } from '../context/MyContext';
 
 const Login: React.FC = () => {
   const { setToggleModals } = useMyContext();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const closeLogin = () => {
     setToggleModals((prev: { toggleLogin: any; }) => ({
@@ -18,6 +18,20 @@ const Login: React.FC = () => {
     }))
     console.log("dasdsda");
   }
+
+  const showSignup = () => {
+    setToggleModals((prev: { toggleSignup: any; }) => ({
+      ...prev,
+      toggleSignup: true,
+
+
+    }))
+    setToggleModals((prev: { toggleLogin: boolean }) => ({
+      ...prev,
+      toggleLogin: false,
+    }));
+  }
+
 
 
   const showLoginModal = () => {
@@ -74,6 +88,7 @@ const Login: React.FC = () => {
             )}
           </button>
           <button
+          onClick={showSignup}
             type="submit"
             className="mt-2 border-2 cursor-pointer border-gray-300 text-black rounded p-2 hover:bg-gradient-to-r hover:from-orange-600 hover:to-orange-400 hover:text-white transition duration-300 flex justify-center items-center"
             disabled={loading}

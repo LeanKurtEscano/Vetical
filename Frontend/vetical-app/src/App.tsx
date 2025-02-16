@@ -6,7 +6,8 @@ import { MyProvider } from './context/MyContext';
 import Login from './sections/Login';
 import Home from './sections/Home';
 import LoginModal from './layouts/LoginModal';
-import OtpVerification from './layouts/OtpVerification';
+
+import SignupModal from './layouts/SignupModal';
 function App() {
   return (
     <MyProvider>
@@ -27,7 +28,11 @@ const Main: React.FC = () => {
       )}
 
       {toggleModals.toggleLoginModal && (
-        <OtpVerification />
+        <LoginModal/> 
+      )}
+
+      {toggleModals.toggleSignup && (
+        <SignupModal />
       )}
 
       <Home />

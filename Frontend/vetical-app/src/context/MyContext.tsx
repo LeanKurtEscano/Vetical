@@ -11,6 +11,7 @@ interface HandleModal {
   toggleLogin: boolean;
   toggleLoginModal: boolean;
   toggleEmailModal: boolean;
+  toggleSignup: boolean;
 }
 
 
@@ -26,7 +27,8 @@ export const MyProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   const [toggleModals , setToggleModals] = useState<HandleModal> ({
     toggleLogin: false,
     toggleEmailModal: false,
-    toggleLoginModal:false
+    toggleLoginModal:false,
+    toggleSignup: false
   })
 
 
