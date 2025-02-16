@@ -1,5 +1,5 @@
 import { api1 } from "./axiosConfig";
-
+import { OtpDetails } from "../constants/interfaces/AuthInterface";
 
 interface loginDetails {
     email:string;
@@ -7,11 +7,7 @@ interface loginDetails {
 }
 
 
-export interface OtpDetails {
-  email:string;
-  otpCode:string;
 
-}
 export const loginAuth = async (data: loginDetails ) => {
     try {
       const response = await api1.post("/login/", {data:data}); 

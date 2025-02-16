@@ -48,7 +48,7 @@ const Login: React.FC = () => {
   }
   return (
     <section className="h-screen w-full fixed inset-0 flex justify-center items-center bg-gray-500/50  z-50">
-      <div className="relative flex flex-col p-6 bg-white border-1 border-amber-500 rounded-lg shadow-2xl w-96">
+      <div className=" flex flex-col p-6 bg-white border-1 border-amber-500 rounded-lg shadow-2xl w-[500px]">
 
         <div className="cursor-pointer mb-2" onClick={closeLogin}>
           <FontAwesomeIcon icon={faTimes} className="text-gray-500 text-base" />

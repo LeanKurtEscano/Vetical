@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { verifyOtp } from "../services/auth";
 import { useMyContext } from "../context/MyContext";
-import { OtpDetails } from "../services/auth";
+import { OtpDetails } from "../constants/interfaces/AuthInterface";
 import email from "../assets/email.webp"
 const OtpVerification = () => {
   const [otp, setOtp] = useState("");

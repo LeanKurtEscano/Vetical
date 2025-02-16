@@ -3,21 +3,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash, faMapMarkerAlt, faTimes, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
 import { useMyContext } from "../context/MyContext";
-import { Register } from "../Constants/AuthInterface";
+import { Register } from "../constants/interfaces/AuthInterface";
 const SignupModal = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+ 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
   const { setToggleModals } = useMyContext();
   const [registerDetails, setRegisterDetails] = useState<Register>({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    longitude: '',
-    latitude: ''
+    email: "",
+    password: "",
+    confirmPassword: "",
+    longitude:"",
+    latitude: ""
 
   })
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
@@ -43,6 +41,19 @@ const SignupModal = () => {
     }));
   };
 
+  console.log(registerDetails);
+
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {name, value} = e.target;
+    
+    setRegisterDetails(prevData => {
+      const updatedData = {...prevData, [name]: value}
+
+      return updatedData;
+    })
+  }
+
 
   const getLocation = (): void => {
     if ("geolocation" in navigator) {
@@ -52,7 +63,11 @@ const SignupModal = () => {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           });
-          console.log(position.coords.latitude);
+          setRegisterDetails((prevData) => ({
+            ...prevData,
+            latitude: position.coords.latitude.toString(),
+            longitude: position.coords.longitude.toString(),
+          }));
         },
         () => {
           alert("Location access denied.");
@@ -95,8 +110,9 @@ const SignupModal = () => {
           </label>
           <input
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={registerDetails.email}
+            name = "email"
+            onChange={handleChange}
             id="email"
             className="mt-1 bg-white border border-gray-300 rounded p-2 w-full placeholder-gray-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
             placeholder="Enter your email"
@@ -112,9 +128,10 @@ const SignupModal = () => {
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={registerDetails.password}
+              onChange={handleChange}
               id="password"
+              name = "password"
               className="mt-1 bg-white border border-gray-300 rounded p-2 w-full placeholder-gray-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
               placeholder="Enter your password"
               autoComplete="off"
@@ -138,9 +155,10 @@ const SignupModal = () => {
           <div className="relative">
             <input
               type={showConfirmPassword ? "text" : "password"}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              value={registerDetails.confirmPassword}
+              onChange={handleChange}
               id="confirmPassword"
+              name = "confirmPassword"
               className="mt-1 bg-white border border-gray-300 rounded p-2 w-full placeholder-gray-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
               placeholder="Confirm your password"
               autoComplete="off"

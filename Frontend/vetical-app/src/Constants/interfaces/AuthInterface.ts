@@ -5,3 +5,9 @@ export interface Register {
  longitude: string,
  latitude: string
 }
+
+export interface OtpDetails {
+    email:string;
+    otpCode:string;
+  
+  }
