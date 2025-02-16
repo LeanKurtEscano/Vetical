@@ -22,9 +22,7 @@ export const MyProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     username: "",
     email: "",
   })
-  const [sessionExpired, setSessionExpired] = useState(false);
-  const [toggleLog , setToggleLog] = useState(false);
-  const [toggleSesh, setToggleSesh] = useState(false);
+  
   const [toggleModals , setToggleModals] = useState<HandleModal> ({
     toggleLogin: false,
     toggleEmailModal: false,
@@ -35,7 +33,7 @@ export const MyProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 
 
   return (
-    <MyContext.Provider value={{ isAuthenticated,toggleModals,setToggleModals, setIsAuthenticated,userDetails, setUserDetails, toggleLog , setToggleLog,sessionExpired,setSessionExpired,toggleSesh,setToggleSesh}}>
+    <MyContext.Provider value={{ isAuthenticated,toggleModals,setToggleModals, setIsAuthenticated,userDetails, setUserDetails}}>
       {children}
     </MyContext.Provider>
   );

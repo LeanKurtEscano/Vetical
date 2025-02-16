@@ -6,6 +6,7 @@ import { MyProvider } from './context/MyContext';
 import Login from './sections/Login';
 import Home from './sections/Home';
 import LoginModal from './layouts/LoginModal';
+import OtpVerification from './layouts/OtpVerification';
 function App() {
   return (
     <MyProvider>
@@ -14,28 +15,28 @@ function App() {
   );
 }
 
-const Main:React.FC = () => {
-  const {toggleModals} = useMyContext();
-  
+const Main: React.FC = () => {
+  const { toggleModals } = useMyContext();
+
   return (
-  
+
     <>
-    <Navbar />
-    {toggleModals.toggleLogin && (
-      <Login />
-    )}
+      <Navbar />
+      {toggleModals.toggleLogin && (
+        <Login />
+      )}
 
-{toggleModals.toggleLoginModal && (
-      <LoginModal />
-    )}
+      {toggleModals.toggleLoginModal && (
+        <OtpVerification />
+      )}
 
-    <Home />
-    
-    
-   
-   
+      <Home />
+
+
+
+
     </>
-    
+
   )
 }
 
