@@ -4,10 +4,10 @@ from django.conf import settings
 
 
 
-def send_otp_to_email(email,message):
+def send_otp_to_email(email,message,action_subject):
     try:
         otp = random.randint(100000,999999)
-        subject = f"Your Account Verification Code for Password Reset"
+        subject = f"{action_subject}"
         otp_message = f"{message} is {otp}"
         email_from = settings.EMAIL_HOST
         send_mail(subject, otp_message, email_from,[email])

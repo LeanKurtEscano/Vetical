@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { verifyOtp } from "../services/auth";
+import { verifyLogin, verifyOtp } from "../services/auth";
 import { useMyContext } from "../context/MyContext";
 import { OtpDetails } from "../constants/interfaces/AuthInterface";
 import email from "../assets/email.webp"
@@ -26,12 +26,32 @@ const OtpVerification = () => {
 
     }
     try { 
-      const response =  await verifyOtp(data);
+      const response =  await verifyLogin(data);
       if(response.status === 200){
         setIsAuthenticated(true);
+        setToggleModals((prev: { toggleEmailModal: any }) => ({
+          ...prev,
+          toggleEmailModal: false
+        }))
       }
-    } catch(error) {
-      alert("dasdasdasda");
+    } catch(error:any) {
+      const { data, status } = error.response;
+      switch (status) {
+          case 400:
+              setOtpError(data.error)
+           
+            break;
+        
+          case 404:
+              setOtpError(data.error)
+          
+            break;
+        
+          default:
+            alert("Please fill out the field");
+            // Handle other errors
+            break;
+      }
     }
   };
 
@@ -40,6 +60,10 @@ const OtpVerification = () => {
     setToggleModals((prev: { toggleLoginModal: any }) => ({
       ...prev,
       toggleLoginModal: true
+    }))
+    setToggleModals((prev: { toggleEmailModal: any }) => ({
+      ...prev,
+      toggleEmailModal: false
     }))
 
   }
@@ -56,10 +80,10 @@ const OtpVerification = () => {
       <div className="relative flex flex-col p-6 z-20 border-orange-500 bg-white border-2 rounded-lg shadow-2xl w-[500px]">
 
         <div className="flex justify-between items-center mb-4">
-          <button onClick={goBack} className="text-gray-500 hover:text-gray-700">
+          <button onClick={goBack} className="text-gray-500 cursor-pointer hover:text-gray-700">
             <FontAwesomeIcon icon={faArrowLeft} className="text-lg" />
           </button>
-          <button onClick={closeOtpModal} className="text-gray-500 hover:text-gray-700">
+          <button onClick={closeOtpModal} className="text-gray-500 cursor-pointer hover:text-gray-700">
             <FontAwesomeIcon icon={faTimes} className="text-lg" />
           </button>
         </div>
@@ -98,7 +122,7 @@ const OtpVerification = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="mt-4 bg-orange-500 text-white font-semibold py-2 rounded-lg hover:bg-orange-600 transition"
+            className="mt-4 cursor-pointer bg-orange-500 text-white font-semibold py-2 rounded-lg hover:bg-orange-600 transition"
           >
             Continue
           </button>

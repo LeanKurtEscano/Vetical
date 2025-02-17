@@ -58,6 +58,15 @@ const LoginModal: React.FC = () => {
 
       if (response.data.success) {
         sessionStorage.setItem("email",email);
+        setToggleModals((prev: { toggleEmailModal: any }) => ({
+          ...prev,
+          toggleEmailModal: true
+        }))
+
+        setToggleModals((prev: { toggleLoginModal: any; }) => ({
+          ...prev,
+          toggleLoginModal: false,
+        }))
       }
 
     } catch (error: any) {

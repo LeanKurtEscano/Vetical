@@ -6,8 +6,9 @@ import { MyProvider } from './context/MyContext';
 import Login from './sections/Login';
 import Home from './sections/Home';
 import LoginModal from './layouts/LoginModal';
-
+import OtpRegister from './layouts/OtpRegister';
 import SignupModal from './layouts/SignupModal';
+import OtpVerification from './layouts/OtpVerification';
 function App() {
   return (
     <MyProvider>
@@ -16,9 +17,12 @@ function App() {
   );
 }
 
+
 const Main: React.FC = () => {
   const { toggleModals } = useMyContext();
-
+  
+   
+   
   return (
 
     <>
@@ -31,8 +35,15 @@ const Main: React.FC = () => {
         <LoginModal/> 
       )}
 
+      {toggleModals.toggleEmailModal && (
+        <OtpVerification/> 
+      )} 
+
       {toggleModals.toggleSignup && (
         <SignupModal />
+      )}
+      {toggleModals.toggleRegister && (
+        <OtpRegister />
       )}
 
       <Home />
