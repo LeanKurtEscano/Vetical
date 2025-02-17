@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { verifyLogin, verifyOtp } from "../services/auth";
+import { verifyLogin } from "../services/auth";
 import { useMyContext } from "../context/MyContext";
 import { OtpDetails } from "../constants/interfaces/AuthInterface";
 import email from "../assets/email.webp"
@@ -49,7 +49,7 @@ const OtpVerification = () => {
         
           default:
             alert("Please fill out the field");
-            // Handle other errors
+          
             break;
       }
     }

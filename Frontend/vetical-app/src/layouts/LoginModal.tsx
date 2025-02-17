@@ -1,47 +1,41 @@
-import React from 'react'
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft,faEye, faEyeSlash, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faEye, faEyeSlash, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useMyContext } from '../context/MyContext';
 import { Link } from 'react-router-dom';
 import { loginAuth } from '../services/auth';
 import logo from '../assets/dogl.png';
-
+import { motion } from "framer-motion";
 
 const LoginModal: React.FC = () => {
   const [show, setShow] = useState(false);
   const { setToggleModals } = useMyContext();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-
-  const toggleIcon = () => {
-    setShow(!show);
-  };
+  const toggleIcon = () => setShow(!show);
 
   const closeLogin = () => {
-    setToggleModals((prev: { toggleLoginModal: any; }) => ({
+    setToggleModals((prev: { toggleLoginModal: any }) => ({
       ...prev,
       toggleLoginModal: false,
-    }))
-  }
+    }));
+  };
 
   const goBack = () => {
     setToggleModals((prev: { toggleLogin: any }) => ({
       ...prev,
       toggleLogin: true
-    }))
+    }));
 
-    setToggleModals((prev: { toggleLoginModal: any; }) => ({
+    setToggleModals((prev: { toggleLoginModal: any }) => ({
       ...prev,
       toggleLoginModal: false,
-    }))
-
-  }
-  
+    }));
+  };
 
   const loginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,29 +43,24 @@ const LoginModal: React.FC = () => {
     setPasswordError("");
     setLoading(true);
 
-    const data = {
-      email: email,
-      password: password
-    }
     try {
-      const response = await loginAuth(data);
+      const response = await loginAuth({ email, password });
 
       if (response.data.success) {
-        sessionStorage.setItem("email",email);
+        sessionStorage.setItem("email", email);
         setToggleModals((prev: { toggleEmailModal: any }) => ({
           ...prev,
           toggleEmailModal: true
-        }))
+        }));
 
-        setToggleModals((prev: { toggleLoginModal: any; }) => ({
+        setToggleModals((prev: { toggleLoginModal: any }) => ({
           ...prev,
           toggleLoginModal: false,
-        }))
+        }));
       }
-
     } catch (error: any) {
       setLoading(false);
-
+      
       if (error.response) {
         const { data, status } = error.response;
 
@@ -79,112 +68,95 @@ const LoginModal: React.FC = () => {
           setPasswordError(data.error);
           return;
         }
-
         if (status === 404) {
           setEmailError(data.error);
           return;
         }
-
-
-
         if (status === 500) {
-          alert(" Vetical is Under Maintenance: Please try again later");
+          alert("Vetical is Under Maintenance: Please try again later");
           return;
         }
-
       } else {
         alert("Network error: Please check your connection");
       }
     }
-
-
-
   };
 
   return (
-    <section className="h-screen w-full fixed inset-0 flex justify-center items-center bg-gray-500/50 z-50">
-    <div className="relative flex flex-col p-6 z-20 border-amber-500 bg-white border-2 rounded-lg shadow-2xl w-96">
-      
-      <div className="flex justify-between items-center mb-2">
-        <FontAwesomeIcon 
-          icon={faArrowLeft} 
-          className="text-gray-500 text-base cursor-pointer" 
-          onClick={goBack} 
-        />
-        <FontAwesomeIcon 
-          icon={faTimes} 
-          className="text-gray-500 text-base cursor-pointer" 
-          onClick={closeLogin}
-        />
-      </div>
-  
+    <motion.section 
+      className="h-screen w-full fixed inset-0 flex justify-center items-center bg-gray-500/50 z-50"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <motion.div
+        className="relative flex flex-col p-6 z-20 border-amber-500 bg-white border-2 rounded-lg shadow-2xl w-96"
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -50 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+      >
+        <div className="flex justify-between items-center mb-2">
+          <FontAwesomeIcon icon={faArrowLeft} className="text-gray-500 text-base cursor-pointer" onClick={goBack} />
+          <FontAwesomeIcon icon={faTimes} className="text-gray-500 text-base cursor-pointer" onClick={closeLogin} />
+        </div>
 
-      <div className="flex justify-center mb-3">
-        <img src={logo} alt="Logo" className="h-10" />
-      </div>
-  
-     
-      <h2 className="text-2xl font-semibold text-center  whitespace-nowrap">
-        Welcome to Vetical
-      </h2>
-  
-    
-      <div className="flex items-center justify-center flex-row mb-2">
-        <Link to="/signup">
-          <p className="text-center bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent whitespace-nowrap hover:underline">
-            Sign up for an account?
-          </p>
-        </Link>
-      </div>
-  
-      {/* Login Form */}
-      <form className="flex flex-col" onSubmit={loginSubmit}>
-        {/* Email Input */}
-        <div className="mb-4">
-          <label htmlFor="username" className="block mb-2 text-black">
-            Email Address:
-          </label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            id="username"
-            className="bg-white border border-gray-300 placeholder-gray-500 rounded p-2 w-full transition duration-300 focus:border-gray-500 focus:ring-0"
-            autoComplete="off"
-            placeholder="Enter your email"
-          />
-          {emailError && <p className="text-red-500">{emailError}</p>}
+        <div className="flex justify-center mb-3">
+          <img src={logo} alt="Logo" className="h-10" />
         </div>
-  
-        {/* Password Input */}
-        <div className="mb-2 relative">
-          <label htmlFor="password" className="block mb-2 text-black">
-            Password:
-          </label>
-          <input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            type={show ? "text" : "password"}
-            id="password"
-            className="bg-white border border-gray-300 placeholder-gray-500 transition duration-300 rounded p-2 pr-10 w-full"
-            placeholder="Enter your password"
-          />
-          <FontAwesomeIcon
-            icon={show ? faEyeSlash : faEye}
-            onClick={toggleIcon}
-            className="absolute right-2 text-gray-400 top-1/2 pt-2 cursor-pointer"
-          />
+
+        <h2 className="text-2xl font-semibold text-center whitespace-nowrap">Welcome to Vetical</h2>
+
+        <div className="flex items-center justify-center flex-row mb-2">
+          <Link to="/signup">
+            <p className="text-center bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent whitespace-nowrap hover:underline">
+              Sign up for an account?
+            </p>
+          </Link>
         </div>
-  
-        {passwordError && <p className="text-red-500">{passwordError}</p>}
-  
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className="bg-gradient-to-r cursor-pointer from-orange-600 to-orange-400 mt-2 text-white rounded p-2 hover:bg-blue-600 transition duration-300 flex justify-center items-center"
-          disabled={loading}
-        >
-          {loading ? (
+
+        <form className="flex flex-col" onSubmit={loginSubmit}>
+          {/* Email Input */}
+          <div className="mb-4">
+            <label htmlFor="email" className="block mb-2 text-black">Email Address:</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              id="email"
+              className="bg-white border border-gray-300 placeholder-gray-500 rounded p-2 w-full transition duration-300 focus:border-gray-500 focus:ring-0"
+              autoComplete="off"
+              placeholder="Enter your email"
+            />
+            {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
+          </div>
+
+          {/* Password Input */}
+          <div className="mb-4 relative">
+            <label htmlFor="password" className="block mb-2 text-black">Password:</label>
+            <input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type={show ? "text" : "password"}
+              id="password"
+              className="bg-white border border-gray-300 placeholder-gray-500 rounded p-2 pr-10 w-full"
+              placeholder="Enter your password"
+            />
+            <FontAwesomeIcon
+              icon={show ? faEyeSlash : faEye}
+              onClick={toggleIcon}
+              className="absolute right-2 text-gray-400 top-1/2 pt-2 cursor-pointer"
+            />
+            {passwordError && <p className="text-red-500 text-sm mt-1">{passwordError}</p>}
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="bg-gradient-to-r cursor-pointer from-orange-600 to-orange-400 mt-2 text-white rounded p-2 hover:bg-orange-500 transition duration-300 flex justify-center items-center"
+            disabled={loading}
+          >
+           {loading ? (
             <>
               <svg
                 width="20"
@@ -201,14 +173,11 @@ const LoginModal: React.FC = () => {
           ) : (
             "Log in"
           )}
-        </button>
-      </form>
-    </div>
-  </section>
+          </button>
+        </form>
+      </motion.div>
+    </motion.section>
+  );
+};
 
-
-
-  )
-}
-
-export default LoginModal
+export default LoginModal;
