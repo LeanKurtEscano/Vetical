@@ -9,6 +9,8 @@ import LoginModal from './layouts/LoginModal';
 import OtpRegister from './layouts/OtpRegister';
 import SignupModal from './layouts/SignupModal';
 import OtpVerification from './layouts/OtpVerification';
+import { useEffect } from 'react';
+import useTokenHandler from './hooks/useTokenHandler';
 function App() {
   return (
     <MyProvider>
@@ -19,10 +21,12 @@ function App() {
 
 
 const Main: React.FC = () => {
-  const { toggleModals } = useMyContext();
+  const { toggleModals,setIsAuthenticated } = useMyContext();
+  useTokenHandler();
+
   
-   
-   
+
+  
   return (
 
     <>

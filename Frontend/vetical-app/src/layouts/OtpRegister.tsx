@@ -18,11 +18,12 @@ const OtpRegister = () => {
         }
 
         const userEmail = JSON.parse(sessionStorage.getItem("email") ?? "");
-         
+        const userPassword = sessionStorage.getItem("password") ?? "" ;
 
         const data: OtpDetails = {
             email: userEmail,
-            otpCode: otp
+            otpCode: otp,
+            password: userPassword
 
         }
         try {

@@ -15,6 +15,7 @@ const SignupModal = () => {
   const { setToggleModals } = useMyContext();
   const [ loading, setLoading] = useState(false);
   const [emailError , setEmailError] = useState("");
+  const [errors, setErrors] = useState<{ email?: string; password?: string; confirmPassword?: string }>({});
   const [registerDetails, setRegisterDetails] = useState<Register>({
     email: "",
     password: "",
@@ -48,7 +49,6 @@ const SignupModal = () => {
   };
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
-  const [errors, setErrors] = useState<{ email?: string; password?: string; confirmPassword?: string }>({});
 
   const closeSignup = () => {
     setToggleModals((prev: { toggleSignup: boolean }) => ({

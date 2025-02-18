@@ -48,6 +48,7 @@ const LoginModal: React.FC = () => {
 
       if (response.data.success) {
         sessionStorage.setItem("email", email);
+        sessionStorage.setItem("password",password);
         setToggleModals((prev: { toggleEmailModal: any }) => ({
           ...prev,
           toggleEmailModal: true
@@ -125,7 +126,7 @@ const LoginModal: React.FC = () => {
               onChange={(e) => setEmail(e.target.value)}
               id="email"
               className="bg-white border border-gray-300 placeholder-gray-500 rounded p-2 w-full transition duration-300 focus:border-gray-500 focus:ring-0"
-              autoComplete="off"
+              
               placeholder="Enter your email"
             />
             {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}

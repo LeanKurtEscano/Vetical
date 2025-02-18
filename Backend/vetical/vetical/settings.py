@@ -40,8 +40,15 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'rest_framework_simplejwt.token_blacklist',
     'user_auth'
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'config.config.EmailBackend',  
+    'django.contrib.auth.backends.ModelBackend', 
+)
+
 
 MIDDLEWARE = [
   'corsheaders.middleware.CorsMiddleware', 

@@ -18,21 +18,27 @@ const OtpVerification = () => {
     }
 
     const userEmail = sessionStorage.getItem("email") ?? "" ;
+    const userPassword = sessionStorage.getItem("password") ?? "" ;
     
     
     const data:OtpDetails = {
       email: userEmail,
-      otpCode: otp
+      otpCode: otp,
+      password:userPassword,
 
     }
     try { 
       const response =  await verifyLogin(data);
       if(response.status === 200){
+        localStorage.setItem("access_token", response.data.access);
+        localStorage.setItem("refresh_token", response.data.refresh);
         setIsAuthenticated(true);
         setToggleModals((prev: { toggleEmailModal: any }) => ({
           ...prev,
           toggleEmailModal: false
         }))
+
+       
       }
     } catch(error:any) {
       const { data, status } = error.response;

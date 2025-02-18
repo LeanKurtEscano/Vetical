@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view,permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth.models import User
 from .models import CustomUser
 from rest_framework.response import Response
 from django.contrib.auth import authenticate,logout
@@ -55,27 +55,44 @@ def user_login(request):
 
 
 
-
 @api_view(["POST"])
 def verify_password_otp(request):
-    data = request.data.get("data", {})
-    email = data.get("email")
-    otpCode = data.get("otpCode")
+    try:
+        # Extract data from request
+        data = request.data.get("data", {})
+        email = data.get("email")
+        password = data.get("password")
+        otpCode = data.get("otpCode")
+        purpose = "verification"
+        
+       
+        cache_key = f"{email}_{purpose}"
+        
+        # Get OTP from cache
+        cache_otp = cache.get(cache_key)
+       
+        if cache_otp is None:
+            return Response({"error": "OTP code is expired. Please generate a new one"}, status=status.HTTP_404_NOT_FOUND)
+        
+        
+        if str(cache_otp) == str(otpCode):
+            
+            user_auth = authenticate(request, username=email, password=password)
+            
+           
+            get_token = RefreshToken.for_user(user_auth)
+            return Response({
+                "success": "User is verified",
+                "refresh": str(get_token),
+                "access": str(get_token.access_token)
+            }, status=status.HTTP_200_OK)
+        
+        return Response({"error": "Incorrect OTP code. Please try again."}, status=status.HTTP_400_BAD_REQUEST)
     
-    purpose = "verification"
-    
-    cache_key = f"{email}_{purpose}"
-    print(cache_key)
-    
-    cache_otp = cache.get(cache_key)
-    
-    if cache_otp is None:
-        return Response({"error":"OTP code is expired. Please generate a new one"},status=status.HTTP_404_NOT_FOUND)
-    
-    if str(cache_otp) == str(otpCode):
-        return Response({"success": "User is verified"},status = status.HTTP_200_OK)
-    
-    return Response({"error": "Incorrect OTP code. Please try again."},status = status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        print(f"{e}")
+        # Catch any other unexpected errors
+        return Response({"error": "An unexpected error occurred. Please try again later."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(["POST"])    
@@ -84,13 +101,12 @@ def verify_register_otp(request):
     email = data.get("email")
     otpCode = data.get("otpCode")
     user_data = request.data.get("details", {})
-    print(data)
-    print(user_data)
+  
     
     purpose = "register"
     
     cache_key = f"{email}_{purpose}"
-    print(cache_key)
+
     
     cache_otp = cache.get(cache_key)
     
@@ -128,7 +144,7 @@ def user_register(request):
         
         
         cache_key = f"{email}_{purpose}"
-        print(cache_key)
+        
         
     
         otp_generated = send_otp_to_email(email, message,subject)
@@ -143,7 +159,18 @@ def user_register(request):
     except Exception as e:
         print(f"{e}")
     
-    
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def log_out(request):
+    try:
+        refresh_token = request.data.get("refresh")  
+        if refresh_token:
+            token = RefreshToken(refresh_token)
+            token.blacklist() 
+        logout(request)
+        return Response({'success': 'Logged out successfully'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["POST"])
 def google_login(request):
