@@ -1,6 +1,5 @@
-
-import Navbar from './layouts/NavBar'
-import './App.css'
+import Navbar from './layouts/NavBar';
+import './App.css';
 import { useMyContext } from './context/MyContext';
 import { MyProvider } from './context/MyContext';
 import Login from './sections/Login';
@@ -9,8 +8,10 @@ import LoginModal from './layouts/LoginModal';
 import OtpRegister from './layouts/OtpRegister';
 import SignupModal from './layouts/SignupModal';
 import OtpVerification from './layouts/OtpVerification';
-import { useEffect } from 'react';
 import useTokenHandler from './hooks/useTokenHandler';
+import {  Routes, Route } from 'react-router-dom';
+import Profile from './sections/Profile';
+
 function App() {
   return (
     <MyProvider>
@@ -19,45 +20,30 @@ function App() {
   );
 }
 
-
 const Main: React.FC = () => {
-  const { toggleModals,setIsAuthenticated } = useMyContext();
+  const { toggleModals } = useMyContext();
   useTokenHandler();
 
-  
-
-  
   return (
+ 
+      <>
+        <Navbar />
+        
+        {/* Conditionally rendered modals */}
+        {toggleModals.toggleLogin && <Login />}
+        {toggleModals.toggleLoginModal && <LoginModal />}
+        {toggleModals.toggleEmailModal && <OtpVerification />}
+        {toggleModals.toggleSignup && <SignupModal />}
+        {toggleModals.toggleRegister && <OtpRegister />}
 
-    <>
-      <Navbar />
-      {toggleModals.toggleLogin && (
-        <Login />
-      )}
+        {/* Define routes */}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/account" element={<Profile />} />
+        </Routes>
+      </>
 
-      {toggleModals.toggleLoginModal && (
-        <LoginModal/> 
-      )}
+  );
+};
 
-      {toggleModals.toggleEmailModal && (
-        <OtpVerification/> 
-      )} 
-
-      {toggleModals.toggleSignup && (
-        <SignupModal />
-      )}
-      {toggleModals.toggleRegister && (
-        <OtpRegister />
-      )}
-
-      <Home />
-
-
-
-
-    </>
-
-  )
-}
-
-export default App
+export default App;

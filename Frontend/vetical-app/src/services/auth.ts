@@ -66,9 +66,7 @@ export const logOut = async()  => {
   try {
     const accessToken = localStorage.getItem("access_token");
     const refreshToken = localStorage.getItem("refresh_token");
-    console.log("Access Token before request:", accessToken);
-    console.log("Refresh Token before request:", refreshToken);
-
+  
     if (!accessToken) {
       throw new Error("No access token found.");
     }
@@ -81,3 +79,11 @@ export const logOut = async()  => {
     console.error("Logout error:", error)
   }
 }
+
+
+import { UserDetails } from '../constants/interfaces/AuthInterface';
+
+export const fetchUserDetails = async (): Promise<UserDetails> => {
+  const response = await apiToken.get('/account/');
+  return response.data; 
+};

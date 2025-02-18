@@ -13,7 +13,7 @@ import logging
 from django.core.cache import cache
 from .emails.email import send_otp_to_email
 from django.contrib.auth.hashers import make_password
-
+from .serializers import CustomUserSerializer
 logger = logging.getLogger(__name__)
 # Create your views here.
 
@@ -122,7 +122,12 @@ def verify_register_otp(request):
         latitude = user_data.get("latitude")
         
         user = CustomUser.objects.create(email= email, password = make_password(password), birthdate=birthdate, age = int(age), longitude = float(longitude), latitude = float(latitude))
-        return Response({"success": "User is verified"},status = status.HTTP_200_OK)
+        
+        user_auth = authenticate(request, username = email, password = password)
+        
+        get_token = RefreshToken.for_user(user_auth)
+        
+        return Response({"success": "User is verified","access": str(get_token.access_token),"refresh": str(get_token)},status = status.HTTP_200_OK)
     
     return Response({"error": "Incorrect OTP code. Please try again."},status = status.HTTP_400_BAD_REQUEST)
 
@@ -200,3 +205,14 @@ def google_login(request):
     except Exception as e:
         print(f"{e}")
         return Response({"error": "Network Error"}, status= status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def user_details(request):
+    
+    user = request.user
+    serializer = CustomUserSerializer(user)
+
+    return Response(serializer.data, status= status.HTTP_200_OK)
+     

@@ -5,13 +5,14 @@ import { faBell, faCalendarCheck, faBars, faUser, faCog, faSignOutAlt } from "@f
 import { useMyContext } from "../context/MyContext";
 import { motion } from "framer-motion";
 import { logOut } from "../services/auth";
-import { AxiosResponse } from "axios";
-
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Navbar: React.FC = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const { setToggleModals, isAuthenticated,setIsAuthenticated } = useMyContext();
   const toggleDropdown = () => setShowDropdown(!showDropdown);
+  const nav = useNavigate();
   const showLogin = () => setToggleModals((prev: { toggleLogin: any }) => ({
     ...prev,
     toggleLogin: true,
@@ -26,6 +27,7 @@ const Navbar: React.FC = () => {
       localStorage.removeItem("access_token");
       setIsAuthenticated(false);
       setShowDropdown(false);
+      nav('/');
     }
 
   } catch(error:any) {
@@ -92,13 +94,13 @@ const Navbar: React.FC = () => {
                   transition={{ duration: 0.2, ease: "easeInOut" }}
                   className="absolute right-0 mt-2 w-48 bg-white rounded-lg overflow-hidden z-50 shadow-[0_4px_10px_rgba(0,0,0,0.15),0_-4px_10px_rgba(0,0,0,0.15),4px_0_10px_rgba(0,0,0,0.15),-4px_0_10px_rgba(0,0,0,0.15)]"
                 >
-                  <a
-                    href="#"
-                    className="block px-4 py-3 text-gray-700 hover:bg-gray-100 flex items-center"
+                  <Link to ="/account"
+                    
+                    className=" px-4 py-3 text-gray-700 hover:bg-gray-100 flex items-center"
                   >
                     <FontAwesomeIcon icon={faCog} className="mr-2" />
-                    Settings
-                  </a>
+                    Account
+                  </Link>
                   <button
                     className="w-full text-gray-700 cursor-pointer hover:bg-gray-100 flex items-center px-4 py-3"
                     onClick={handleLogout}

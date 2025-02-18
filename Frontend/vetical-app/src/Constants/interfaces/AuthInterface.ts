@@ -15,3 +15,10 @@ export interface OtpDetails {
   
 }
 
+export interface UserDetails {
+    email:string; 
+    birthdate: string;
+    age: string;
+    longitude: number;  
+    latitude: number;    
+}

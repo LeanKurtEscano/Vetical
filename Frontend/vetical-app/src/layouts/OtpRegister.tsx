@@ -29,6 +29,9 @@ const OtpRegister = () => {
         try {
             const response = await verifyOtp(data);
             if (response.status === 200) {
+
+                localStorage.setItem("refresh_token", response.data.refresh);
+                localStorage.setItem("access_token", response.data.access);
                 setIsAuthenticated(true);
                 setToggleModals((prev: { toggleRegister: any }) => ({
                     ...prev,
@@ -50,7 +53,7 @@ const OtpRegister = () => {
               
                 default:
                   alert("Please fill out the field");
-                  // Handle other errors
+               
                   break;
             }
         }
