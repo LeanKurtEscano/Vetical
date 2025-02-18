@@ -1,7 +1,6 @@
 from django.contrib.auth.backends import BaseBackend
 from user_auth.models import CustomUser
-from django.contrib.auth import get_user_model
-from django.core.exceptions import ObjectDoesNotExist
+
 
 #Custom authentication settings using email
 class EmailBackend(BaseBackend):

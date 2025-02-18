@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import dogl from "../assets/dogl.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell, faCalendarCheck, faBars, faUser, faCog, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faCalendarCheck, faBars, faUser, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { useMyContext } from "../context/MyContext";
 import { motion } from "framer-motion";
 import { logOut } from "../services/auth";
@@ -56,7 +56,7 @@ const Navbar: React.FC = () => {
               {/* Appointments Button (Visible on Medium Screens and Up) */}
               <div className="hidden md:block">
                 <div className="font-medium rounded-lg hover:bg-gray-200 text-sm px-4 py-2 text-center transition-all duration-300 ease-in-out cursor-pointer">
-                  Appointments
+                 Vet Your Clinic
                 </div>
               </div>
             </>
@@ -98,7 +98,7 @@ const Navbar: React.FC = () => {
                     
                     className=" px-4 py-3 text-gray-700 hover:bg-gray-100 flex items-center"
                   >
-                    <FontAwesomeIcon icon={faCog} className="mr-2" />
+                    <FontAwesomeIcon icon={faUser} className="mr-2" />
                     Account
                   </Link>
                   <button
