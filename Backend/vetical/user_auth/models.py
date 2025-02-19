@@ -25,9 +25,7 @@ class Veterinarian(models.Model):
     license_number = models.CharField(max_length=50, unique=True)
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
-    
-    def __str__(self):
-        return f"{self.user.username} - {self.clinic_name}"
+   
 
 class Specializations(models.Model):
     specialization = models.CharField(max_length=255)

@@ -12,6 +12,7 @@ import useTokenHandler from './hooks/useTokenHandler';
 import {  Routes, Route } from 'react-router-dom';
 import Profile from './sections/Profile';
 import VetLanding from './sections/VetLanding';
+import VetRegistration from './sections/VetRegister';
 function App() {
   return (
     <MyProvider>
@@ -39,7 +40,8 @@ const Main: React.FC = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/account" element={<Profile />} />
-          <Route path="/register-vet" element={<VetLanding />} />
+          <Route path="/landing-vet" element={<VetLanding />} />
+          <Route path="/register-vet" element={<VetRegistration />} />
         </Routes>
       </>
 

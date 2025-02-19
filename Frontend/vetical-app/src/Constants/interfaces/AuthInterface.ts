@@ -16,6 +16,7 @@ export interface OtpDetails {
 }
 
 export interface UserDetails {
+    id:number
     email:string; 
     birthdate: string;
     age: string;

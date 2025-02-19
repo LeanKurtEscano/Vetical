@@ -18,6 +18,10 @@ const Navbar: React.FC = () => {
     toggleLogin: true,
   }));
 
+  const goToLanding = () => {
+    nav('/landing-vet')
+  }
+
 
   const handleLogout = async() => {
   try {
@@ -48,14 +52,14 @@ const Navbar: React.FC = () => {
         <div className="flex items-center space-x-4 md:order-2 pr-12">
           {isAuthenticated ? (
             <>
-              {/* Notification Bell Icon */}
+           
               <div className="w-10 h-10 rounded-full cursor-pointer flex justify-center items-center hover:bg-orange-500 transition duration-200 hover:text-white">
                 <FontAwesomeIcon icon={faBell} className="w-6 h-6" />
               </div>
 
-              {/* Appointments Button (Visible on Medium Screens and Up) */}
+              
               <div className="hidden md:block">
-                <div className="font-medium rounded-lg hover:bg-gray-200 text-sm px-4 py-2 text-center transition-all duration-300 ease-in-out cursor-pointer">
+                <div onClick={goToLanding} className="font-medium rounded-lg hover:bg-gray-200 text-sm px-4 py-2 text-center transition-all duration-300 ease-in-out cursor-pointer">
                  Vet Your Clinic
                 </div>
               </div>
