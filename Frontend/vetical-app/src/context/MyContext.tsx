@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
 
 
@@ -19,7 +19,6 @@ interface HandleModal {
 const MyContext = createContext<any>(null);
 
 export const MyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [userDetails, setUserDetails] = useState<UserDetails>({
     username: "",
     email: "",
@@ -32,12 +31,24 @@ export const MyProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     toggleSignup: false,
     toggleRegister: false,
   })
+  
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [role, setRole] = useState(() => {
+   
+    return localStorage.getItem("role") || "User";
+  });
 
+  useEffect(() => {
+  
+    localStorage.setItem("role", role);
+  }, [role]);
+  
+ 
 
 
 
   return (
-    <MyContext.Provider value={{ isAuthenticated,toggleModals,setToggleModals, setIsAuthenticated,userDetails, setUserDetails}}>
+    <MyContext.Provider value={{ isAuthenticated,toggleModals,setToggleModals, setIsAuthenticated,userDetails, setUserDetails, role, setRole}}>
       {children}
     </MyContext.Provider>
   );

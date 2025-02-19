@@ -11,7 +11,7 @@ import OtpVerification from './layouts/OtpVerification';
 import useTokenHandler from './hooks/useTokenHandler';
 import {  Routes, Route } from 'react-router-dom';
 import Profile from './sections/Profile';
-
+import VetLanding from './sections/VetLanding';
 function App() {
   return (
     <MyProvider>
@@ -21,7 +21,7 @@ function App() {
 }
 
 const Main: React.FC = () => {
-  const { toggleModals } = useMyContext();
+  const { toggleModals, setIsAuthenticated } = useMyContext();
   useTokenHandler();
 
   return (
@@ -29,17 +29,17 @@ const Main: React.FC = () => {
       <>
         <Navbar />
         
-        {/* Conditionally rendered modals */}
         {toggleModals.toggleLogin && <Login />}
         {toggleModals.toggleLoginModal && <LoginModal />}
         {toggleModals.toggleEmailModal && <OtpVerification />}
         {toggleModals.toggleSignup && <SignupModal />}
         {toggleModals.toggleRegister && <OtpRegister />}
 
-        {/* Define routes */}
+        
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/account" element={<Profile />} />
+          <Route path="/register-vet" element={<VetLanding />} />
         </Routes>
       </>
 

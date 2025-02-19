@@ -16,7 +16,7 @@ const Login: React.FC = () => {
 
 
     }))
-    console.log("dasdsda");
+    
   }
 
   const showSignup = () => {
