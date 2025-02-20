@@ -22,4 +22,5 @@ export interface UserDetails {
     age: string;
     longitude: number;  
     latitude: number;    
+    is_veterinarian: boolean;
 }

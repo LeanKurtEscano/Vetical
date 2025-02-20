@@ -10,10 +10,12 @@ const RoleBasedRoute: React.FC<RoleBasedRouteProps> = ({
   petOwnerComponent,
   vetComponent,
 }) => {
-  const { role } = useRole();  
 
+  
+  const { role } = useRole();  
+  
   // Conditionally render based on role
-  return role === 'User' ? <>{petOwnerComponent}</> : <>{vetComponent}</>;
+  return role == 'User' ? <>{petOwnerComponent}</> : <>{vetComponent}</>;
 };
 
 export default RoleBasedRoute;

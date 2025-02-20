@@ -85,5 +85,7 @@ import { UserDetails } from '../constants/interfaces/AuthInterface';
 
 export const fetchUserDetails = async (): Promise<UserDetails> => {
   const response = await apiToken.get('/account/');
+  console.log(response.data);
   return response.data; 
 };
+

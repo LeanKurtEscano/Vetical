@@ -1,10 +1,10 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { fetchUserDetails } from '../services/auth';
+import { UserDetails } from '../constants/interfaces/AuthInterface';
 
-
-
-interface UserDetails {
-  username: string;
+interface Details {
   email:string
+  is_veterinarian: boolean;
 }
 
 interface HandleModal {
@@ -19,11 +19,6 @@ interface HandleModal {
 const MyContext = createContext<any>(null);
 
 export const MyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    username: "",
-    email: "",
-  })
-  
   const [toggleModals , setToggleModals] = useState<HandleModal> ({
     toggleLogin: false,
     toggleEmailModal: false,
@@ -31,12 +26,37 @@ export const MyProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     toggleSignup: false,
     toggleRegister: false,
   })
-  
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [role, setRole] = useState(() => {
    
     return localStorage.getItem("role") || "User";
   });
+  const [details, setDetails] = useState<Details>({
+    email: "",
+    is_veterinarian: false
+  })
+ 
+  useEffect(() => {
+    const getDetails = async () => {
+      try {
+        const response = await fetchUserDetails(); 
+        setDetails({
+          email: response.email, 
+          is_veterinarian: response.is_veterinarian
+        }); 
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    };
+    if(isAuthenticated){
+      getDetails();
+     
+    }
+    
+  }, [isAuthenticated]);
+
+  console.log(details)
+  
 
   useEffect(() => {
   
@@ -48,7 +68,7 @@ export const MyProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 
 
   return (
-    <MyContext.Provider value={{ isAuthenticated,toggleModals,setToggleModals, setIsAuthenticated,userDetails, setUserDetails, role, setRole}}>
+    <MyContext.Provider value={{ isAuthenticated,toggleModals,setToggleModals,details, setDetails, setIsAuthenticated, role, setRole}}>
       {children}
     </MyContext.Provider>
   );

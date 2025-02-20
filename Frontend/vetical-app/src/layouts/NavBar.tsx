@@ -7,10 +7,11 @@ import { motion } from "framer-motion";
 import { logOut } from "../services/auth";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import useRole from "../hooks/useRole";
 
 const Navbar: React.FC = () => {
   const [showDropdown, setShowDropdown] = useState(false);
-  const { setToggleModals, isAuthenticated,setIsAuthenticated } = useMyContext();
+  const { setToggleModals, isAuthenticated, setIsAuthenticated, details } = useMyContext();
   const toggleDropdown = () => setShowDropdown(!showDropdown);
   const nav = useNavigate();
   const showLogin = () => setToggleModals((prev: { toggleLogin: any }) => ({
@@ -18,26 +19,28 @@ const Navbar: React.FC = () => {
     toggleLogin: true,
   }));
 
+  const {role, changeRole} = useRole();
+
   const goToLanding = () => {
     nav('/landing-vet')
   }
 
 
-  const handleLogout = async() => {
-  try {
-    const response = await logOut();
-    if(response?.status === 200) {
-      localStorage.removeItem("refresh_token");
-      localStorage.removeItem("access_token");
-      setIsAuthenticated(false);
-      setShowDropdown(false);
-      nav('/');
+  const handleLogout = async () => {
+    try {
+      const response = await logOut();
+      if (response?.status === 200) {
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("access_token");
+        setIsAuthenticated(false);
+        setShowDropdown(false);
+        nav('/');
+      }
+
+    } catch (error: any) {
+      alert("Something went wrong. Please try again later")
     }
 
-  } catch(error:any) {
-    alert("Something went wrong. Please try again later")
-  }
-  
 
   }
 
@@ -52,17 +55,33 @@ const Navbar: React.FC = () => {
         <div className="flex items-center space-x-4 md:order-2 pr-12">
           {isAuthenticated ? (
             <>
-           
+          
               <div className="w-10 h-10 rounded-full cursor-pointer flex justify-center items-center hover:bg-orange-500 transition duration-200 hover:text-white">
                 <FontAwesomeIcon icon={faBell} className="w-6 h-6" />
               </div>
 
-              
               <div className="hidden md:block">
-                <div onClick={goToLanding} className="font-medium rounded-lg hover:bg-gray-200 text-sm px-4 py-2 text-center transition-all duration-300 ease-in-out cursor-pointer">
-                 Vet Your Clinic
-                </div>
+                {details.is_veterinarian ? (
+                
+                  <div
+                    onClick={changeRole}
+                    className="font-medium rounded-lg hover:bg-gray-200 text-sm px-4 py-2 text-center transition-all duration-300 ease-in-out cursor-pointer"
+                  >
+                    {role === "User" ? "Switch to Veterinarian": "Switch to Pet Owner"} 
+                  </div>
+                ) : (
+                  <>
+                 
+                    <div
+                      onClick={goToLanding}
+                      className="font-medium rounded-lg hover:bg-gray-200 text-sm px-4 py-2 text-center transition-all duration-300 ease-in-out cursor-pointer"
+                    >
+                      Vet Your Clinic
+                    </div>
+                  </>
+                )}
               </div>
+
             </>
           ) : null}
 
@@ -81,10 +100,10 @@ const Navbar: React.FC = () => {
                 className="flex items-center gap-3 px-4 py-2 bg-white border border-gray-300 rounded-3xl shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-300"
                 onClick={toggleDropdown}
               >
-               
+
                 <FontAwesomeIcon icon={faBars} className="text-gray-600 w-3 h-3" />
 
-               
+
                 <div className="w-7 h-7 bg-gray-400 text-white flex items-center justify-center rounded-full">
                   <FontAwesomeIcon icon={faUser} className="w-3 h-3" />
                 </div>
@@ -98,8 +117,8 @@ const Navbar: React.FC = () => {
                   transition={{ duration: 0.2, ease: "easeInOut" }}
                   className="absolute right-0 mt-2 w-48 bg-white rounded-lg overflow-hidden z-50 shadow-[0_4px_10px_rgba(0,0,0,0.15),0_-4px_10px_rgba(0,0,0,0.15),4px_0_10px_rgba(0,0,0,0.15),-4px_0_10px_rgba(0,0,0,0.15)]"
                 >
-                  <Link to ="/account"
-                    
+                  <Link to="/account"
+
                     className=" px-4 py-3 text-gray-700 hover:bg-gray-100 flex items-center"
                   >
                     <FontAwesomeIcon icon={faUser} className="mr-2" />
@@ -118,7 +137,7 @@ const Navbar: React.FC = () => {
           ) : (
             <button
               onClick={showLogin}
-             className="text-white border-2 cursor-pointer border-orange-500 bg-orange-500 font-medium rounded-lg text-sm hidden md:block px-4 py-2 text-center transition-all duration-300 ease-in-out hover:bg-white hover:bg-clip-text hover:text-transparent hover:bg-gradient-to-r from-orange-600 to-orange-400"
+              className="text-white border-2 cursor-pointer border-orange-500 bg-orange-500 font-medium rounded-lg text-sm hidden md:block px-4 py-2 text-center transition-all duration-300 ease-in-out hover:bg-white hover:bg-clip-text hover:text-transparent hover:bg-gradient-to-r from-orange-600 to-orange-400"
             >
               Login
             </button>

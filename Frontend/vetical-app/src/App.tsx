@@ -13,7 +13,8 @@ import {  Routes, Route } from 'react-router-dom';
 import Profile from './sections/Profile';
 import VetLanding from './sections/Veterinarian/VetLanding';
 import VetRegistration from './sections/Veterinarian/VetRegister';
-
+import RoleBasedRoute from './Routes/RoleBaseRoute';
+import VetDashboard from './sections/Veterinarian/VetDashboard';
 function App() {
   return (
     <MyProvider>
@@ -39,7 +40,16 @@ const Main: React.FC = () => {
 
         
         <Routes>
-          <Route path="/" element={<Home />} />
+
+                <Route
+                    path="/"
+                    element={
+                        <RoleBasedRoute
+                            petOwnerComponent={<Home />}
+                            vetComponent={<VetDashboard />}
+                        />
+                    }
+                />
           <Route path="/account" element={<Profile />} />
           <Route path="/landing-vet" element={<VetLanding />} />
           <Route path="/register-vet" element={<VetRegistration />} />

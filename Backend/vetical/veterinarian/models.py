@@ -2,7 +2,7 @@ from django.db import models
 from user_auth.models import CustomUser
 
 class Veterinarian(models.Model):
-    user_id = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="veterinarian")
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="veterinarian")
     phone_number = models.CharField(max_length=15, unique=True)
     email = models.EmailField(unique=True)
     clinic_address = models.TextField()
@@ -16,10 +16,8 @@ class Veterinarian(models.Model):
 class Specializations(models.Model):
     specialization = models.CharField(max_length=255)
 
-    def __str__(self):
-        return f"{self.veterinarian.user.username} - {self.specialization}"
     
 class VeterinarianSpecialization(models.Model):
-    veterinarian_id = models.ForeignKey(Veterinarian, on_delete=models.CASCADE, related_name="specializations")
-    specialization_id = models.ForeignKey(Specializations, on_delete = models.CASCADE)
+    veterinarian = models.ForeignKey(Veterinarian, on_delete=models.CASCADE, related_name="specializations")
+    specialization = models.ForeignKey(Specializations, on_delete = models.CASCADE)
 

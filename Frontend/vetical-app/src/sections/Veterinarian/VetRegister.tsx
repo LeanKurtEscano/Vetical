@@ -11,11 +11,12 @@ import { fetchSpecializations, submitRegistration } from "../../services/Vet";
 import { LoadingAnimation } from "../../components/LoadingAnimation";
 import useRole from "../../hooks/useRole";
 import { useNavigate } from "react-router-dom";
-
+import { useMyContext } from "../../context/MyContext";
 const VetRegistration: React.FC = () => {
+  const { setDetails } = useMyContext();
   const { userDetails } = useUserDetails();
   const nav = useNavigate();
-  const {role, changeRole, changeRoleFromRegister} = useRole();
+  const { changeRoleFromRegister} = useRole();
   const [formData, setFormData] = useState<FormData>({
     id: undefined,
     phone_number: "",
@@ -50,7 +51,7 @@ const VetRegistration: React.FC = () => {
     const email = sessionStorage.getItem("email") || "";
     const birthdate = sessionStorage.getItem("birthdate") || "";
     const age = sessionStorage.getItem("age") || "";
-    const latitudeStr = sessionStorage.getItem("latitude");
+    const latitudeStr = sessionStorage.getItem("lat");
     const latitude = latitudeStr ? parseFloat(latitudeStr) : 0;
     const longitudeStr = sessionStorage.getItem("long");
     const longitude = longitudeStr ? parseFloat(longitudeStr) : 0;
@@ -108,11 +109,14 @@ const VetRegistration: React.FC = () => {
   const handleSubmit = async(e: FormEvent) => {
     e.preventDefault();
     const finalData = { ...formData, specializations: selectedSpecializations };
+    console.log(finalData);
     try {
       const response = await submitRegistration(finalData);
       
       if(response.status === 200) {
         changeRoleFromRegister();
+        setDetails((prev: {is_veterinarian: boolean}) => ({... prev, is_veterinarian: true}))
+        nav('/');
       }
     } catch(error:any) {
       alert("Something Went Wrong");
@@ -249,7 +253,7 @@ const VetRegistration: React.FC = () => {
           
           <button
             type="submit"
-            className="w-full bg-orange-600 text-white font-semibold py-3 rounded-lg hover:bg-orange-700 transition duration-300"
+            className="w-full bg-orange-600 cursor-pointer text-white font-semibold py-3 rounded-lg hover:bg-orange-700 transition duration-300"
           >
             Register as Veterinarian
           </button>
