@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'rest_framework_simplejwt.token_blacklist',
-    'user_auth'
+    'user_auth',
+    'veterinarian'
 ]
 
 AUTHENTICATION_BACKENDS = (

@@ -19,6 +19,17 @@ export const apiToken = axios.create({
   },
 });
 
+
+export const vetApi= axios.create({
+  baseURL: "http://localhost:8000/vet",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${accessToken}`,
+  },
+});
+
+  
+
   
   
   

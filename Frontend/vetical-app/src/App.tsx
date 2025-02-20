@@ -11,8 +11,9 @@ import OtpVerification from './layouts/OtpVerification';
 import useTokenHandler from './hooks/useTokenHandler';
 import {  Routes, Route } from 'react-router-dom';
 import Profile from './sections/Profile';
-import VetLanding from './sections/VetLanding';
-import VetRegistration from './sections/VetRegister';
+import VetLanding from './sections/Veterinarian/VetLanding';
+import VetRegistration from './sections/Veterinarian/VetRegister';
+
 function App() {
   return (
     <MyProvider>

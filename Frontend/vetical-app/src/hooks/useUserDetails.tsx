@@ -9,7 +9,13 @@ const useUserDetails = () => {
    
     useEffect(() => {
         if (data?.id) {
-            localStorage.setItem("userId", data.id.toString());
+            sessionStorage.setItem("userId", data.id.toString());
+            sessionStorage.setItem("email", data.email);
+            sessionStorage.setItem("birthdate", data.birthdate);
+            sessionStorage.setItem("age", data.age);
+            sessionStorage.setItem("lat", data.latitude.toString());  
+            sessionStorage.setItem("long", data.longitude.toString());  
+            sessionStorage.setItem("age", data.age);
         }
     }, [data]); 
 

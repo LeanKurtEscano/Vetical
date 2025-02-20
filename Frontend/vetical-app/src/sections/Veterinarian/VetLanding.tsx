@@ -1,14 +1,13 @@
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 const VetLanding = () => {
   const nav = useNavigate();
   const goToLanding = () => {
-    nav('/landing-vet')
+    nav('/register-vet')
   }
   return (
     <div className="relative h-screen flex flex-col items-center justify-center bg-white text-gray-900 overflow-hidden">
-      {/* Gradient circles */}
+     
       <div className="absolute w-96 h-96 bg-orange-500 rounded-full opacity-30 blur-3xl top-10 left-10"></div>
       <div className="absolute w-96 h-96 bg-purple-500 rounded-full opacity-30 blur-3xl bottom-10 right-10"></div>
 

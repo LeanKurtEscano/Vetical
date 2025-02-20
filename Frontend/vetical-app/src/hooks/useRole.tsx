@@ -11,7 +11,12 @@ const useRole = () => {
     localStorage.setItem("role", newRole);
   }, [role, setRole]); 
 
-  return { role, changeRole };
+
+  const changeRoleFromRegister = () => {
+    setRole("Vet");
+  }
+
+  return { role, changeRole, changeRoleFromRegister };
 };
 
 export default useRole;
