@@ -1,17 +1,19 @@
 import React, { useState } from "react";
-import dogl from "../assets/dogl.png";
+import dog1 from "../../assets/dogl.png"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell, faCalendarCheck, faBars, faUser, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
-import { useMyContext } from "../context/MyContext";
+import { faBell, faCalendarCheck, faChevronDown, faBars, faUser, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { useMyContext } from "../../context/MyContext";
 import { motion } from "framer-motion";
-import { logOut } from "../services/auth";
+import { logOut } from "../../services/auth";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import useRole from "../hooks/useRole";
+import useRole from "../../hooks/useRole";
 
-const Navbar: React.FC = () => {
+const VetNav: React.FC = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const { setToggleModals, isAuthenticated, setIsAuthenticated, details } = useMyContext();
+
+  const [menuOpen, setMenuOpen] = useState(false);
   const toggleDropdown = () => setShowDropdown(!showDropdown);
   const nav = useNavigate();
   const showLogin = () => setToggleModals((prev: { toggleLogin: any }) => ({
@@ -19,7 +21,7 @@ const Navbar: React.FC = () => {
     toggleLogin: true,
   }));
 
-  const {role, changeRole} = useRole();
+  const { role, changeRole } = useRole();
 
   const goToLanding = () => {
     nav('/landing-vet')
@@ -48,30 +50,30 @@ const Navbar: React.FC = () => {
     <nav className="bg-customWhite">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <img src={dogl} className="h-14" alt="Vetical Logo" />
+          <img src={dog1} className="h-14" alt="Vetical Logo" />
           <span className="self-center text-xl bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent font-bold whitespace-nowrap">Vetical</span>
         </a>
 
         <div className="flex items-center space-x-4 md:order-2 pr-12">
           {isAuthenticated ? (
             <>
-          
+
               <div className="w-10 h-10 rounded-full cursor-pointer flex justify-center items-center hover:bg-orange-500 transition duration-200 hover:text-white">
                 <FontAwesomeIcon icon={faBell} className="w-6 h-6" />
               </div>
 
               <div className="hidden md:block">
                 {details.is_veterinarian ? (
-                
+
                   <div
                     onClick={changeRole}
                     className="font-medium rounded-lg hover:bg-gray-200 text-sm px-4 py-2 text-center transition-all duration-300 ease-in-out cursor-pointer"
                   >
-                    {role === "User" ? "Switch to Veterinarian": "Switch to Pet Owner"} 
+                    {role === "User" ? "Switch to Veterinarian" : "Switch to Pet Owner"}
                   </div>
                 ) : (
                   <>
-                 
+
                     <div
                       onClick={goToLanding}
                       className="font-medium rounded-lg hover:bg-gray-200 text-sm px-4 py-2 text-center transition-all duration-300 ease-in-out cursor-pointer"
@@ -147,11 +149,44 @@ const Navbar: React.FC = () => {
 
         <div className="pl-40 items-center justify-between hidden w-full md:flex md:w-auto md:order-1">
           <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border text-slate-900 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0">
-            {["Clinics", "Veterinarians"].map((item) => (
-              <li key={item}>
-                <a href="#" className="block py-2 px-3 md:p-0 rounded md:bg-transparent hover:text-orange-500 transition duration-200">
-                  {item}
-                </a>
+            {["Today", "Messages", "Menu"].map((item) => (
+              <li key={item} className="relative">
+                {item === "Menu" ? (
+                  <button
+                    className="flex cursor-pointer items-center gap-1 py-2 px-3 md:p-0 rounded md:bg-transparent hover:text-orange-500 transition duration-200"
+                    onClick={() => setMenuOpen(!menuOpen)}
+                  >
+                    {item}
+                    <FontAwesomeIcon icon={faChevronDown} className={`transition-transform duration-200 ${menuOpen ? "rotate-180" : ""}`} />
+                  </button>
+                ) : (
+                  <Link to="#" className="block py-2 px-3 md:p-0 rounded md:bg-transparent hover:text-orange-500 transition duration-200">
+                    {item}
+                  </Link>
+                )}
+
+                {menuOpen && item === "Menu" && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.15)] border border-gray-200 z-50 overflow-hidden"
+                  >
+                    <Link to="/reservations" className="block px-5 py-3 text-gray-700 text-sm font-medium hover:bg-gray-100 transition">
+                      Reservations
+                    </Link>
+                    <hr className="border-gray-200" />
+                    <Link to="/create-listing" className="block px-5 py-3 text-gray-700 text-sm font-medium hover:bg-gray-100 transition">
+                      Create a new listing
+                    </Link>
+                    <hr className="border-gray-200" />
+                    <Link to="/create-record" className="block px-5 py-3 text-gray-700 text-sm font-medium hover:bg-gray-100 transition">
+                      Create a Record
+                    </Link>
+                  </motion.div>
+                )}
+
               </li>
             ))}
           </ul>
@@ -161,4 +196,4 @@ const Navbar: React.FC = () => {
   );
 };
 
-export default Navbar;
+export default VetNav;

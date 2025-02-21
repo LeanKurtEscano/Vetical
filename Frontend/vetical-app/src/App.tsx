@@ -15,6 +15,7 @@ import VetLanding from './sections/Veterinarian/VetLanding';
 import VetRegistration from './sections/Veterinarian/VetRegister';
 import RoleBasedRoute from './Routes/RoleBaseRoute';
 import VetDashboard from './sections/Veterinarian/VetDashboard';
+import VetNav from './layouts/Veterinarian/VetNav';
 function App() {
   return (
     <MyProvider>
@@ -24,13 +25,16 @@ function App() {
 }
 
 const Main: React.FC = () => {
-  const { toggleModals, setIsAuthenticated } = useMyContext();
+  const { toggleModals, setIsAuthenticated,role } = useMyContext();
   useTokenHandler();
 
   return (
  
       <>
-        <Navbar />
+      {role === "User" ?(
+          <Navbar />
+      ) : ( <VetNav />)}
+       
         
         {toggleModals.toggleLogin && <Login />}
         {toggleModals.toggleLoginModal && <LoginModal />}
