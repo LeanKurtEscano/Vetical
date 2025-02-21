@@ -31,7 +31,7 @@ const GoogleButton: React.FC = () => {
 
 
             if (response.status === 200) {
-                console.log(response.data)
+                console.log(response.data);
                 setIsAuthenticated(true);
                 const accessToken = response.data.access_token;
                 const refreshToken = response.data.refresh_token;

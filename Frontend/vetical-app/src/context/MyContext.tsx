@@ -55,7 +55,6 @@ export const MyProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     
   }, [isAuthenticated]);
 
-  console.log(details)
   
 
   useEffect(() => {

@@ -114,8 +114,7 @@ const Navbar: React.FC = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.2, ease: "easeInOut" }}
-                  className="absolute right-0 mt-2 w-48 bg-white rounded-lg overflow-hidden z-50 shadow-[0_4px_10px_rgba(0,0,0,0.15),0_-4px_10px_rgba(0,0,0,0.15),4px_0_10px_rgba(0,0,0,0.15),-4px_0_10px_rgba(0,0,0,0.15)]"
-                >
+                  className="absolute right-0 mt-2 w-48 bg-white rounded-lg overflow-hidden z-50 border border-gray-200 shadow-[0_4px_12px_rgba(0,0,0,0.15)]">
                   <Link to="/account"
 
                     className=" px-4 py-3 text-gray-700 hover:bg-gray-100 flex items-center"
