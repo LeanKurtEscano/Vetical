@@ -32,6 +32,9 @@ def register_vet(request):
         vet = Veterinarian.objects.create(
             user_id = int(data['id']),
             email = data['email'],
+            first_name = data['first_name'],
+            middle_name = data['middle_name'],
+            last_name = data['last_name'],
             phone_number = data['phone_number'],
             clinic_address = data['clinic_address'],
             years_of_experience = data['years_of_experience'],

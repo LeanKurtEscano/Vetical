@@ -3,6 +3,9 @@ from user_auth.models import CustomUser
 
 class Veterinarian(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="veterinarian")
+    first_name = models.CharField(max_length=255, null = True)
+    last_name = models.CharField(max_length=255, null = True)
+    middle_name = models.CharField(max_length=255, null = True)
     phone_number = models.CharField(max_length=15, unique=True)
     email = models.EmailField(unique=True)
     clinic_address = models.TextField()
