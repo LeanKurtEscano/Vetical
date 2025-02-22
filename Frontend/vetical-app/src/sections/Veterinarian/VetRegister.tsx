@@ -5,7 +5,7 @@ import "leaflet/dist/leaflet.css";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useUserDetails from "../../hooks/useUserDetails";
-import { FormData,Specialization } from "../../constants/interfaces/VetInterface";
+import { FormData, Specialization } from "../../constants/interfaces/VetInterface";
 import { useQuery } from "@tanstack/react-query";
 import { fetchSpecializations, submitRegistration } from "../../services/Vet";
 import { LoadingAnimation } from "../../components/LoadingAnimation";
@@ -16,10 +16,13 @@ const VetRegistration: React.FC = () => {
   const { setDetails } = useMyContext();
   const { userDetails } = useUserDetails();
   const nav = useNavigate();
-  const { changeRoleFromRegister} = useRole();
+  const { changeRoleFromRegister } = useRole();
   const [formData, setFormData] = useState<FormData>({
     id: undefined,
     phone_number: "",
+    first_name: "",
+    middle_name: "",
+    last_name: "",
     email: "",
     clinic_address: "",
     years_of_experience: "",
@@ -43,8 +46,8 @@ const VetRegistration: React.FC = () => {
         lng: userDetails.longitude,
       });
     }
-  }, [userDetails]); 
-  
+  }, [userDetails]);
+
 
   useEffect(() => {
     const userId = Number(sessionStorage.getItem("userId")) || 0;
@@ -55,9 +58,9 @@ const VetRegistration: React.FC = () => {
     const latitude = latitudeStr ? parseFloat(latitudeStr) : 0;
     const longitudeStr = sessionStorage.getItem("long");
     const longitude = longitudeStr ? parseFloat(longitudeStr) : 0;
-        
-  
-    
+
+
+
 
     setFormData((prev) => ({
       ...prev,
@@ -106,19 +109,19 @@ const VetRegistration: React.FC = () => {
     setSelectedSpecializations(selectedSpecializations.filter((s) => s.id !== specialization));
   };
 
-  const handleSubmit = async(e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const finalData = { ...formData, specializations: selectedSpecializations };
     console.log(finalData);
     try {
       const response = await submitRegistration(finalData);
-      
-      if(response.status === 200) {
+
+      if (response.status === 200) {
         changeRoleFromRegister();
-        setDetails((prev: {is_veterinarian: boolean}) => ({... prev, is_veterinarian: true}))
+        setDetails((prev: { is_veterinarian: boolean }) => ({ ...prev, is_veterinarian: true }))
         nav('/');
       }
-    } catch(error:any) {
+    } catch (error: any) {
       alert("Something Went Wrong");
     }
   };
@@ -140,7 +143,32 @@ const VetRegistration: React.FC = () => {
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
-        
+
+          {/* Name Inputs */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            <input
+              type="text"
+              name="first_name"
+              placeholder="First Name"
+              onChange={handleChange}
+              className="w-full p-3 border border-black rounded-lg focus:ring focus:ring-orange-300"
+            />
+            <input
+              type="text"
+              name="middle_name"
+              placeholder="Middle Name (Optional)"
+              onChange={handleChange}
+              className="w-full p-3 border border-black rounded-lg focus:ring focus:ring-orange-300"
+            />
+            <input
+              type="text"
+              name="last_name"
+              placeholder="Last Name"
+              onChange={handleChange}
+              className="w-full p-3 border border-black rounded-lg focus:ring focus:ring-orange-300"
+            />
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <input
               type="text"
@@ -195,7 +223,6 @@ const VetRegistration: React.FC = () => {
             />
           </div>
 
-       
           <textarea
             name="education"
             placeholder="Education"
@@ -203,7 +230,6 @@ const VetRegistration: React.FC = () => {
             className="w-full p-3 border border-black rounded-lg focus:ring focus:ring-orange-300"
           ></textarea>
 
-        
           <div>
             <label className="block font-semibold text-orange-700 mb-2">
               Specializations
@@ -220,7 +246,6 @@ const VetRegistration: React.FC = () => {
               ))}
             </select>
 
-           
             <div className="mt-4 flex flex-wrap gap-2">
               {selectedSpecializations?.map((spec) => (
                 <span
@@ -242,15 +267,13 @@ const VetRegistration: React.FC = () => {
             </div>
           </div>
 
-        
           <div className="h-56 md:h-64 w-full rounded-lg border border-orange-300 overflow-hidden">
-            <MapContainer center={position ||{ lat: 0, lng: 0 } } zoom={13} className="h-full w-full">
+            <MapContainer center={position || { lat: 0, lng: 0 }} zoom={13} className="h-full w-full">
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               <LocationMarker />
             </MapContainer>
           </div>
 
-          
           <button
             type="submit"
             className="w-full bg-orange-600 cursor-pointer text-white font-semibold py-3 rounded-lg hover:bg-orange-700 transition duration-300"
@@ -260,6 +283,7 @@ const VetRegistration: React.FC = () => {
         </form>
       </div>
     </div>
+
 
   );
 };

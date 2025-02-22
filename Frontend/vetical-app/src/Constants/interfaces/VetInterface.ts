@@ -7,6 +7,9 @@ export interface Specialization {
 export interface FormData {
     id?: number;
     phone_number: string;
+    first_name : string;
+    last_name : string;
+    middle_name : string;
     email: string;
     clinic_address: string;
     years_of_experience: string;

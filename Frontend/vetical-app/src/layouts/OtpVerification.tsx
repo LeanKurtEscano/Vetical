@@ -5,11 +5,12 @@ import { verifyLogin } from "../services/auth";
 import { useMyContext } from "../context/MyContext";
 import { OtpDetails } from "../constants/interfaces/AuthInterface";
 import email from "../assets/email.webp"
+import { useNavigate } from "react-router-dom";
 const OtpVerification = () => {
   const [otp, setOtp] = useState("");
   const { setToggleModals,setIsAuthenticated } = useMyContext();
   const [otpError, setOtpError] = useState("");
-
+  const nav = useNavigate();
   const otpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (otp.length !== 6 || isNaN(Number(otp))) {
@@ -37,7 +38,9 @@ const OtpVerification = () => {
           ...prev,
           toggleEmailModal: false
         }))
-
+        setTimeout(() => {
+          nav('/');  
+      }, 200); 
        
       }
     } catch(error:any) {

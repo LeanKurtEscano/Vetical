@@ -35,7 +35,7 @@ export const MyProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     email: "",
     is_veterinarian: false
   })
- 
+  
   useEffect(() => {
     const getDetails = async () => {
       try {

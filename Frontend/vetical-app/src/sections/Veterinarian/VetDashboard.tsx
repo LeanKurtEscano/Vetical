@@ -1,14 +1,18 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 const VetDashboard: React.FC = () => {
+  const nav =useNavigate();
   const username = "Dr. Alex"; // Mock username
-
+  
+  const goToClinicRegistration = () => {
+    nav('/register-clinic');
+  }
   return (
     <div className="max-w-4xl mx-auto p-6">
       {/* Header Section */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold">Welcome, {username}!</h1>
-        <button className="px-4 py-2 bg-orange-500 cursor-pointer duration-300 text-white font-medium rounded-full shadow-md hover:bg-red-600 transition">
+        <button onClick = {goToClinicRegistration}className="px-4 py-2 bg-orange-500 cursor-pointer duration-300 text-white font-medium rounded-full shadow-md hover:bg-red-600 transition">
           + Add Clinic
         </button>
       </div>
