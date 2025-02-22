@@ -1,7 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { fetchUserDetails } from '../services/auth';
-import { UserDetails } from '../constants/interfaces/AuthInterface';
-
+import { ClinicRegistration } from '../constants/interfaces/ClinicInterface';
 interface Details {
   email:string
   is_veterinarian: boolean;
@@ -26,11 +25,45 @@ export const MyProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     toggleSignup: false,
     toggleRegister: false,
   })
+  const [clinicData, setClinicData] = useState<ClinicRegistration>(() => {
+  
+    const storedData = sessionStorage.getItem("clinicData");
+    return storedData 
+      ? { ...JSON.parse(storedData), images: [] } 
+      : {
+          clinicName: "",
+          email: "",
+          openingHours: "",
+          closeHours: "",
+          latitude: 0,
+          longitude: 0,
+          country: "",
+          unit: "",
+          building: "",
+          streetAddress: "",
+          barangay: "",
+          city: "",
+          zipCode: "",
+          province: "",
+          selectedServices: [],
+          images: [],
+      };
+  });
+ 
+  console.log(clinicData)
+
+  useEffect(() => {
+    const { images, ...dataWithoutImages } = clinicData;
+    sessionStorage.setItem("clinicData", JSON.stringify(dataWithoutImages));
+  }, [clinicData]);
+
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [role, setRole] = useState(() => {
-   
+  
     return localStorage.getItem("role") || "User";
   });
+
+
   const [details, setDetails] = useState<Details>({
     email: "",
     is_veterinarian: false
@@ -67,7 +100,7 @@ export const MyProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 
 
   return (
-    <MyContext.Provider value={{ isAuthenticated,toggleModals,setToggleModals,details, setDetails, setIsAuthenticated, role, setRole}}>
+    <MyContext.Provider value={{ isAuthenticated,toggleModals,setToggleModals,details,clinicData, setClinicData, setDetails, setIsAuthenticated, role, setRole}}>
       {children}
     </MyContext.Provider>
   );

@@ -15,6 +15,8 @@ const useTokenHandler = () => {
        
       } catch (error) {
         console.log(`Token validation failed: ${error}`);
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
         setIsAuthenticated(false);
         navigate("/");
       } 

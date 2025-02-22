@@ -6,3 +6,6 @@ class SpecializationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Specializations
         fields = '__all__'
+        
+        
+        

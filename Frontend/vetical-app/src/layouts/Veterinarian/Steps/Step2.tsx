@@ -3,8 +3,10 @@ import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
-
+import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons"
+import { useEffect } from "react";
+import { useMyContext } from "../../../context/MyContext";
+import { ClinicRegistration } from "../../../constants/interfaces/ClinicInterface";
 const clinicIcon = L.divIcon({
     className: "custom-clinic-icon",
     html: `
@@ -30,8 +32,17 @@ const clinicIcon = L.divIcon({
 });
 
 const Step2 = ({ nextStep, prevStep }: { nextStep: () => void; prevStep: () => void }) => {
+    const {clinicData, setClinicData } = useMyContext();
     const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
     const [showMap, setShowMap] = useState(false);
+    
+    useEffect(() => {
+        if(clinicData?.latitude && clinicData?.longitude) {
+            setLocation({ lat: clinicData.latitude, lng: clinicData.longitude });
+            setShowMap(true);
+        }
+
+    },[])
 
     const getLocation = () => {
         if (navigator.geolocation) {
@@ -48,7 +59,9 @@ const Step2 = ({ nextStep, prevStep }: { nextStep: () => void; prevStep: () => v
 
                         if (data.display_name) {
                            sessionStorage.setItem("address",data.display_name);
+                           setClinicData((prev:ClinicRegistration) => ({...prev, longitude: longitude, latitude: latitude}))
                            setShowMap(true);
+                           
                         } else {
                             console.error("No address found");
                         }

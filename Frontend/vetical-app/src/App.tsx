@@ -28,7 +28,7 @@ function App() {
 const Main: React.FC = () => {
   const { toggleModals, setIsAuthenticated,role } = useMyContext();
   useTokenHandler();
-
+  
   return (
  
       <>

@@ -1,37 +1,39 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStethoscope, faTooth, faCapsules, faVial, faXRay, faUserMd } from "@fortawesome/free-solid-svg-icons";
-
+import { ClinicRegistration } from "../../../constants/interfaces/ClinicInterface";
+import { useMyContext } from "../../../context/MyContext";
 import { services } from "../../../constants";
 
 const Step4 = ({ nextStep, prevStep }: { nextStep: () => void; prevStep: () => void }) => {
     const [selectedServices, setSelectedServices] = useState<number[]>([]);
+    const { clinicData , setClinicData} = useMyContext();
 
 
-    const toggleService = (id: number) => {
-        setSelectedServices((prev) =>
-            prev.includes(id) ? prev.filter((serviceId) => serviceId !== id) : [...prev, id]
-        );
-    };
+
+    const toggleService  = ( id: number) => {
+        setClinicData((prev:ClinicRegistration) => ({...prev, 
+            selectedServices: prev.selectedServices.includes(id) ? prev.selectedServices.filter(serviceId => serviceId !== id) : [...prev.selectedServices, id]}))
+    } 
+ 
 
     return (
         <div className="space-y-6 p-6 rounded-2xl max-w-lg mx-auto">
            
             <h2 className="text-2xl font-bold text-gray-800 text-center">Select Your Clinic Services</h2>
             
-            {/* Description */}
+           
             <p className="text-gray-600 text-center text-sm leading-relaxed">
                 Choose the services your clinic provides. Click on a service to add it.
             </p>
 
-            {/* Service Cards */}
+           
             <div className="grid grid-cols-2 gap-4">
                 {services.map((service) => (
                     <div
                         key={service.id}
                         onClick={() => toggleService(service.id)}
                         className={`flex items-center gap-3 p-4 rounded-xl cursor-pointer border-2 
-                        ${selectedServices.includes(service.id) ? "border-orange-500 bg-orange-100" : "border-gray-300"} 
+                        ${clinicData.selectedServices.includes(service.id) ? "border-orange-500 bg-orange-100" : "border-gray-300"} 
                         transition-all hover:shadow-md`}
                     >
                         <FontAwesomeIcon icon={service.icon} className="text-orange-500 w-6 h-6" />

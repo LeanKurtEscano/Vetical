@@ -12,8 +12,8 @@ const VetDashboard: React.FC = () => {
       {/* Header Section */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold">Welcome, {username}!</h1>
-        <button onClick = {goToClinicRegistration}className="px-4 py-2 bg-orange-500 cursor-pointer duration-300 text-white font-medium rounded-full shadow-md hover:bg-red-600 transition">
-          + Add Clinic
+        <button onClick = {goToClinicRegistration}className="px-4 py-2 bg-orange-500 cursor-pointer duration-300 text-white font-medium rounded-full shadow-md hover:bg-orange-600 transition">
+          + List your Clinic
         </button>
       </div>
 

@@ -1,12 +1,10 @@
 import { useState,useEffect } from "react";
-import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-
-
-
+import { useMyContext } from "../../../context/MyContext";
+import { ClinicRegistration } from "../../../constants/interfaces/ClinicInterface";
 const Step3 = ({ nextStep, prevStep }: { nextStep: () => void; prevStep: () => void }) => {
+    const { clinicData, setClinicData } = useMyContext();
     const [formData, setFormData] = useState({
-        clinicName: "",
         unit: "",
         building: "",
         streetAddress: "",
@@ -15,14 +13,19 @@ const Step3 = ({ nextStep, prevStep }: { nextStep: () => void; prevStep: () => v
         zipCode: "",
         province: "",
         country: "Philippines - PH",
-        phoneNumber: "",
-        email: "",
-        website: ""
+       
     });
-    const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
+
+
+
+   
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+         const { name , value } = e.target;
+
+         setClinicData((prev: ClinicRegistration) => ({
+            ...prev, [name]: value
+         }))
     };
 
     useEffect(() => {
@@ -40,15 +43,15 @@ const Step3 = ({ nextStep, prevStep }: { nextStep: () => void; prevStep: () => v
             <select name="country" value={formData.country} className="w-full p-2 border rounded-md">
                 <option>Philippines - PH</option>
             </select>
-            <input name="unit" placeholder="Unit, Level (if applicable)" className="w-full p-2 border rounded-md" />
-            <input name="building" placeholder="Building Name (if applicable)" className="w-full p-2 border rounded-md" />
+            <input name="unit" value={clinicData.unit} onChange = {handleChange}placeholder="Unit, Level (if applicable)" className="w-full p-2 border rounded-md" />
+            <input name="building"  value={clinicData.building} onChange = {handleChange} placeholder="Building Name (if applicable)" className="w-full p-2 border rounded-md" />
             <input name="streetAddress" value={formData.streetAddress} onChange={handleChange} placeholder="Street Address" className="w-full p-2 border rounded-md" />
         
 
-            <input name="barangay" placeholder="Barangay / District" className="w-full p-2 border rounded-md" />
-            <input name="city" placeholder="City / Municipality" className="w-full p-2 border rounded-md" />
-            <input name="zipCode" placeholder="ZIP Code" className="w-full p-2 border rounded-md" />
-            <input name="province" placeholder="Province" className="w-full p-2 border rounded-md" />
+            <input name="barangay"  value={clinicData.barangay} onChange = {handleChange} placeholder="Barangay / District" className="w-full p-2 border rounded-md" />
+            <input name="city"  value={clinicData.city} onChange = {handleChange} placeholder="City / Municipality" className="w-full p-2 border rounded-md" />
+            <input name="zipCode"  value={clinicData.zipCode} onChange = {handleChange} placeholder="ZIP Code" className="w-full p-2 border rounded-md" />
+            <input name="province"  value={clinicData.province} onChange = {handleChange}  placeholder="Province" className="w-full p-2 border rounded-md" />
 
 
 

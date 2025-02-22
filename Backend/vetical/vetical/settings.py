@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
@@ -43,6 +46,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'user_auth',
     'veterinarian'
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 AUTHENTICATION_BACKENDS = (
@@ -170,3 +175,12 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST")
 EMAIL_HOST_PASSWORD = os.getenv("HOST_PASS")
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
+
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv("CLOUD_NAME"),
+    'API_KEY': os.getenv("CLOUDINARY_KEY"),
+    'API_SECRET': os.getenv("CLOUDINARY_SECRET")
+}
+
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"

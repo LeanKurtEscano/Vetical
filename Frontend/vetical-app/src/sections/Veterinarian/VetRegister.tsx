@@ -5,7 +5,7 @@ import "leaflet/dist/leaflet.css";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useUserDetails from "../../hooks/useUserDetails";
-import { FormData, Specialization } from "../../constants/interfaces/VetInterface";
+import { FormDatas, Specialization } from "../../constants/interfaces/VetInterface";
 import { useQuery } from "@tanstack/react-query";
 import { fetchSpecializations, submitRegistration } from "../../services/Vet";
 import { LoadingAnimation } from "../../components/LoadingAnimation";
@@ -17,7 +17,7 @@ const VetRegistration: React.FC = () => {
   const { userDetails } = useUserDetails();
   const nav = useNavigate();
   const { changeRoleFromRegister } = useRole();
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<FormDatas>({
     id: undefined,
     phone_number: "",
     first_name: "",

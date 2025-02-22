@@ -34,12 +34,15 @@ const refreshUserToken  = async() => {
 
 
         if(response.status === 200) {
-            localStorage.setItem("access_token", response.data.access);
+            const newAccessToken = response.data.access;
+            localStorage.setItem("access_token", newAccessToken);;
             return true
 
         }
 
     } catch(error) { 
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
         return false
     }
 }
@@ -52,7 +55,6 @@ export const userAuth = async():Promise<boolean> => {
 
         if(isTokenExpired(accessToken)) {
             const response = await refreshUserToken();
-            localStorage.removeItem("refresh_token");
             return response ?? false
         }
 
