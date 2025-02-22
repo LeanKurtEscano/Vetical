@@ -7,6 +7,8 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Specializations, VeterinarianSpecialization, Veterinarian
 from rest_framework.parsers import MultiPartParser, FormParser
 from user_auth.models import CustomUser
+import cloudinary.uploader
+from .models import Clinics, ClinicImage, ClinicServices
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -77,32 +79,75 @@ def register_vet(request):
 @permission_classes([IsAuthenticated])
 def register_clinic(request):
     try:
-        # Extract images from the form
+        # Extract images
         images = request.FILES.getlist('images')
 
-        # Extract other fields from the form data
-        clinic_name = request.data.get('clinicName')
-        email = request.data.get('email')
-        opening_hours = request.data.get('openingHours')
-        close_hours = request.data.get('closeHours')
-        latitude = request.data.get('latitude')
-        longitude = request.data.get('longitude')
-        country = request.data.get('country')
-        unit = request.data.get('unit')
-        building = request.data.get('building')
-        street_address = request.data.get('streetAddress')
-        barangay = request.data.get('barangay')
-        city = request.data.get('city')
-        zip_code = request.data.get('zipCode')
-        province = request.data.get('province')
-        selected_services = request.data.get('selectedServices')  
+        # Extract other fields safely
+        clinic_name = request.data.get('clinicName', '').strip()
+        email = request.data.get('email', '').strip()
+        opening_hours = request.data.get('openingHours', '').strip()
+        close_hours = request.data.get('closeHours', '').strip()
+        latitude = float(request.data.get('latitude', 0))
+        longitude = float(request.data.get('longitude', 0))
+        country = request.data.get('country', '').strip()
+        unit = request.data.get('unit', '').strip()
+        building = request.data.get('building', '').strip()
+        street_address = request.data.get('streetAddress', '').strip()
+        barangay = request.data.get('barangay', '').strip()
+        city = request.data.get('city', '').strip()
+        zip_code = request.data.get('zipCode', '').strip()
+        province = request.data.get('province', '').strip()
+        selected_services = request.data.get('selectedServices', '')
 
       
+        selected_services_list = [int(x) for x in selected_services.split(",") if x.strip().isdigit()]
 
-        # Return a successful response
+      
+        clinic = Clinics.objects.create(
+            clinic_name=clinic_name,
+            email=email,
+            opening_hours=opening_hours,
+            close_hours=close_hours,
+            latitude=latitude,
+            longitude=longitude,
+            country=country,
+            unit=unit,
+            building=building,
+            street_address=street_address,
+            barangay=barangay,
+            city=city,
+            zip_code=zip_code,
+            province=province,
+        )
+
+     
+        for image in images:
+            uploaded_image = cloudinary.uploader.upload(image)
+            ClinicImage.objects.create(clinic=clinic, image=uploaded_image['secure_url'])
+
+        for service_id in selected_services_list:
+            ClinicServices.objects.create(clinic=clinic, service_id=service_id)
+
         return Response({"success": "Clinic registered successfully"}, status=200)
 
     except Exception as e:
-        # Catch any errors and print them
         print(f"Error: {e}")
         return Response({"error": "Something went wrong"}, status=400)
+
+
+@api_view(["GET"])
+def get_clinics(request):
+    clinics = Clinics.objects.all()
+    data = []
+
+    for clinic in clinics:
+        images = ClinicImage.objects.filter(clinic=clinic)
+        image_urls = [image.image.url for image in images]  # Automatically get Cloudinary URLs
+
+        data.append({
+            "clinicName": clinic.clinic_name,
+            "email": clinic.email,
+            "images": image_urls,  # Cloudinary will return URLs
+        })
+
+    return Response(data)

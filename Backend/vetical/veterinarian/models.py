@@ -1,5 +1,8 @@
 from django.db import models
 from user_auth.models import CustomUser
+import cloudinary
+import cloudinary.uploader
+import cloudinary.models
 
 class Veterinarian(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="veterinarian")
@@ -30,8 +33,8 @@ class Clinics(models.Model):
     email = models.EmailField(unique=True, null=True, blank=True)
     opening_hours = models.CharField( max_length =255, null=True, blank=True)
     close_hours = models.CharField( max_length = 255, null=True, blank=True)
-    latitude = models.DecimalField(max_digits = 9, decimal_places=6, null=True, blank=True)
-    longitude = models.DecimalField(max_digits = 9, decimal_places=6, null=True, blank=True)
+    latitude = models.FloatField(max_digits = 9, decimal_places=6, null=True, blank=True)
+    longitude = models.FloatField(max_digits = 9, decimal_places=6, null=True, blank=True)
     country = models.CharField(max_length = 100, null=True, blank=True)
     unit = models.CharField(max_length = 50, null=True, blank=True)
     building = models.CharField(max_length = 100, null=True, blank=True)
@@ -44,9 +47,9 @@ class Clinics(models.Model):
     def __str__(self):
         return self.clinic_name 
 
-class ClinicImages(models.Model):
-    clinic = models.ForeignKey(Clinics, on_delete=models.CASCADE)
-    image_url = models.URLField(null=True, blank=True) 
+class ClinicImage(models.Model):
+    clinic = models.ForeignKey(Clinics, on_delete=models.CASCADE, related_name="images")
+    image = cloudinary.models.CloudinaryField("image")  # Cloudinary field for image storage
     
 class Services(models.Model):
     service = models.CharField(max_length=100)

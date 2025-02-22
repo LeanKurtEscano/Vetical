@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_simplejwt.token_blacklist',
     'user_auth',
-    'veterinarian'
+    'veterinarian',
     'cloudinary',
     'cloudinary_storage',
 ]
