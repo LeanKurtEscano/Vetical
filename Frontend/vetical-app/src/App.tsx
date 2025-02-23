@@ -17,6 +17,7 @@ import RoleBasedRoute from './Routes/RoleBaseRoute';
 import VetDashboard from './sections/Veterinarian/VetDashboard';
 import VetNav from './layouts/Veterinarian/VetNav';
 import ClinicRegistration from './sections/Veterinarian/ClinicRegistration';
+import ManageListings from './sections/Veterinarian/ManageListings';
 function App() {
   return (
     <MyProvider>
@@ -59,6 +60,7 @@ const Main: React.FC = () => {
           <Route path="/landing-vet" element={<VetLanding />} />
           <Route path="/register-vet" element={<VetRegistration />} />
           <Route path="/register-clinic" element={<ClinicRegistration />} />
+          <Route path="/manage-listings" element={<ManageListings />} />
         </Routes>
       </>
 

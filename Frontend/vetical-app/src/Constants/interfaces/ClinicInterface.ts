@@ -16,6 +16,15 @@ export interface ClinicRegistration {
     selectedServices: number[];
     images: File[]
 } 
+
+
+export interface ClinicImageData {
+  id: number;
+  image: string;
+  uploaded_at: string;
+  location: String;
+  formatted_date: String;
+}
 {/*  unit: "",
   building: "",
   streetAddress: "",

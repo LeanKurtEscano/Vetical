@@ -12,18 +12,16 @@ const Step6 = ({ prevStep }: { prevStep: () => void }) => {
     // Log clinicData to see if it's populated
     console.log("Clinic Data:", clinicData);
  
-    // Append the clinicData fields to the formData
+   
     Object.entries(clinicData).forEach(([key, value]) => {
        if (key !== "images") {
-          console.log(`Appending ${key}: ${value}`); // Log each entry being appended
           formData.append(key, value as string);
        }
     });
  
-    // Check images
+    
     if (clinicData.images && clinicData.images.length > 0) {
        clinicData.images.forEach((file: File) => {
-          console.log("Appending image:", file); // Log each image being appended
           formData.append("images", file);
        });
     } else {
@@ -38,7 +36,8 @@ const Step6 = ({ prevStep }: { prevStep: () => void }) => {
              },
            });
        if (response.status === 200) {
-          console.log("success");
+          
+          nav('/');
        }
     } catch (error) {
        console.error("Error submitting clinic registration:", error);

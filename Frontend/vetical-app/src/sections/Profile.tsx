@@ -7,11 +7,13 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import { LoadingAnimation } from '../components/LoadingAnimation';
 const Profile: React.FC = () => {
     const { userDetails, isLoading, isError, error } = useUserDetails();
     const { email, birthdate, age, longitude, latitude } = userDetails || {};
     const navigate = useNavigate();
-    if (isLoading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    if (isLoading) return <div className="flex justify-center items-center h-screen"><LoadingAnimation/></div>;
     if (isError) return <div className="flex justify-center items-center h-screen">
         Error: {(error instanceof Error ? error.message : 'Something went wrong')}
     </div>;

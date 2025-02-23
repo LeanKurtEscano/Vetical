@@ -8,7 +8,8 @@ from .models import Specializations, VeterinarianSpecialization, Veterinarian
 from rest_framework.parsers import MultiPartParser, FormParser
 from user_auth.models import CustomUser
 import cloudinary.uploader
-from .models import Clinics, ClinicImage, ClinicServices
+from .models import Clinics, ClinicImages, ClinicServices
+from .serializers import ClinicSerializer,ClinicImagesSerializer
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -101,7 +102,8 @@ def register_clinic(request):
 
       
         selected_services_list = [int(x) for x in selected_services.split(",") if x.strip().isdigit()]
-
+        
+        vet = Veterinarian.objects.get(user = request.user)
       
         clinic = Clinics.objects.create(
             clinic_name=clinic_name,
@@ -118,12 +120,13 @@ def register_clinic(request):
             city=city,
             zip_code=zip_code,
             province=province,
+            veterinarian = vet
         )
 
      
         for image in images:
             uploaded_image = cloudinary.uploader.upload(image)
-            ClinicImage.objects.create(clinic=clinic, image=uploaded_image['secure_url'])
+            ClinicImages.objects.create(clinic=clinic, image=uploaded_image['secure_url'])
 
         for service_id in selected_services_list:
             ClinicServices.objects.create(clinic=clinic, service_id=service_id)
@@ -141,13 +144,60 @@ def get_clinics(request):
     data = []
 
     for clinic in clinics:
-        images = ClinicImage.objects.filter(clinic=clinic)
-        image_urls = [image.image.url for image in images]  # Automatically get Cloudinary URLs
+        images = ClinicImages.objects.filter(clinic=clinic)
+        image_urls = [image.image.url for image in images]  
 
         data.append({
             "clinicName": clinic.clinic_name,
             "email": clinic.email,
-            "images": image_urls,  # Cloudinary will return URLs
+            "images": image_urls, 
         })
 
     return Response(data)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_veterinarian_clinics(request):
+    try:
+      
+        if not hasattr(request.user, "veterinarian"):
+            return Response({"error": "User is not registered as a veterinarian"}, status=403)
+
+        veterinarian = request.user.veterinarian  
+
+        clinics = Clinics.objects.filter(veterinarian=veterinarian)
+
+        serializer = ClinicSerializer(clinics, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+
+
+from django.utils.timezone import localtime
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_clinics_images(request):
+    try:
+        vet = Veterinarian.objects.get(user=request.user)
+        clinic = Clinics.objects.get(veterinarian=vet.id)
+        clinic_images = ClinicImages.objects.filter(clinic=clinic.id)
+
+        serializer = ClinicImagesSerializer(clinic_images, many=True)
+        data = serializer.data
+
+        # Add location and formatted date to each item
+        for image in data:
+            image["location"] = f"{clinic.city}, {clinic.province}"
+            image["formatted_date"] = localtime(clinic.registered_at).strftime("%B %d, %Y")
+        
+        print(data)
+        return Response(data, status=200)
+
+    except Clinics.DoesNotExist:
+        return Response({"error": "Clinic not found"}, status=404)
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return Response({"error": str(e)}, status=500)
