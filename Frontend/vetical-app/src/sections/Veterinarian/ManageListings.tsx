@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { getClinicImages } from "../../services/Vet";
-import { useQuery } from "@tanstack/react-query";
+import { getClinicImages, deleteData } from "../../services/Vet";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { LoadingAnimation } from "../../components/LoadingAnimation";
 import { ClinicImageData } from "../../constants/interfaces/ClinicInterface";
 import useModal from "../../hooks/useModal";
@@ -13,8 +13,15 @@ export default function ManageListings() {
   const navigate = useNavigate();
   const { toggle, handleCancel, toggleModal } = useModal();
   const [selectedId, setSelectedId] = useState<number | null>(null);
-
+  const queryClient = useQueryClient();
   const { data, isLoading, isError, error } = useQuery<ClinicImageData[]>(["clinicImages"], getClinicImages);
+
+  // Mutation for deleting a clinic listing
+  const deleteMutation = useMutation(deleteData, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["clinicImages"]); // This triggers a refetch
+    },
+  });
 
   if (isLoading)
     return (
@@ -37,9 +44,9 @@ export default function ManageListings() {
     toggleModal();
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (selectedId !== null) {
-      console.log(`Delete listing with ID: ${selectedId}`);
+      await deleteMutation.mutateAsync(selectedId);
       setSelectedId(null);
       handleCancel();
     }
@@ -60,7 +67,7 @@ export default function ManageListings() {
         Here are all the clinics you've listed. Keep them updated or remove any that are no longer available.
       </p>
 
-      {data.length === 0 ? (
+      {data?.length === 0 ? (
         <p className="text-center text-gray-500 text-sm sm:text-base">No listings available.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -84,9 +91,8 @@ export default function ManageListings() {
                 <p className="text-xs sm:text-sm text-gray-500 mt-1">{listing.location}</p>
               </div>
 
-           
               <button
-                onClick={() => handleDeleteClick(listing.id)}
+                onClick={() => handleDeleteClick(listing.clinic)}
                 className="absolute top-2 sm:top-3 right-2 sm:right-3 p-1 sm:p-1.5 px-2 sm:px-3 cursor-pointer bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition duration-200"
               >
                 <FontAwesomeIcon icon={faTrash} />
@@ -96,7 +102,6 @@ export default function ManageListings() {
         </div>
       )}
 
-    
       {toggle && selectedId !== null && (
         <DeleteModal onCancel={handleCancel} onConfirm={handleDeleteConfirm} id={selectedId} />
       )}

@@ -201,3 +201,19 @@ def get_clinics_images(request):
     except Exception as e:
         print(f"Error: {e}")
         return Response({"error": str(e)}, status=500)
+
+
+@api_view(["GET", "DELETE"])
+def clinic_detail(request, clinic_id):
+    try:
+        clinic = Clinics.objects.get(id=clinic_id)
+    except Clinics.DoesNotExist:
+        return Response({"error": "Clinic not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == "GET":
+        serializer = ClinicSerializer(clinic)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    elif request.method == "DELETE":
+        clinic.delete()
+        return Response({"message": "Clinic deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
