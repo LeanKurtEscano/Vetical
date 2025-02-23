@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -5,14 +6,15 @@ import { getClinicImages } from "../../services/Vet";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingAnimation } from "../../components/LoadingAnimation";
 import { ClinicImageData } from "../../constants/interfaces/ClinicInterface";
+import useModal from "../../hooks/useModal";
+import DeleteModal from "../../components/DeleteModal";
 
 export default function ManageListings() {
   const navigate = useNavigate();
-  const { data, isLoading, isError, error } = useQuery<ClinicImageData[]>(
-    ["clinicImages"],
-    getClinicImages
-  );
-  console.log(data);
+  const { toggle, handleCancel, toggleModal } = useModal();
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+
+  const { data, isLoading, isError, error } = useQuery<ClinicImageData[]>(["clinicImages"], getClinicImages);
 
   if (isLoading)
     return (
@@ -30,8 +32,17 @@ export default function ManageListings() {
 
   const cleanImageUrl = (url: string) => url.replace("image/upload/", "");
 
-  const handleDelete = (id: number) => {
-    console.log(`Delete listing with ID: ${id}`);
+  const handleDeleteClick = (id: number) => {
+    setSelectedId(id);
+    toggleModal();
+  };
+
+  const handleDeleteConfirm = () => {
+    if (selectedId !== null) {
+      console.log(`Delete listing with ID: ${selectedId}`);
+      setSelectedId(null);
+      handleCancel();
+    }
   };
 
   return (
@@ -58,7 +69,6 @@ export default function ManageListings() {
               key={listing.id}
               className="relative bg-white p-3 sm:p-4 cursor-pointer rounded-xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden"
             >
-            
               <div className="w-full h-48 sm:h-56 rounded-lg overflow-hidden">
                 <img
                   src={cleanImageUrl(listing.image)}
@@ -67,7 +77,6 @@ export default function ManageListings() {
                 />
               </div>
 
-           
               <div className="mt-2 sm:mt-3">
                 <p className="text-sm sm:text-lg font-semibold text-gray-900">
                   Listed on {listing.formatted_date}
@@ -75,9 +84,9 @@ export default function ManageListings() {
                 <p className="text-xs sm:text-sm text-gray-500 mt-1">{listing.location}</p>
               </div>
 
-              {/* Delete Button */}
+           
               <button
-                onClick={() => handleDelete(listing.id)}
+                onClick={() => handleDeleteClick(listing.id)}
                 className="absolute top-2 sm:top-3 right-2 sm:right-3 p-1 sm:p-1.5 px-2 sm:px-3 cursor-pointer bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition duration-200"
               >
                 <FontAwesomeIcon icon={faTrash} />
@@ -85,6 +94,11 @@ export default function ManageListings() {
             </div>
           ))}
         </div>
+      )}
+
+    
+      {toggle && selectedId !== null && (
+        <DeleteModal onCancel={handleCancel} onConfirm={handleDeleteConfirm} id={selectedId} />
       )}
     </div>
   );
