@@ -187,12 +187,12 @@ def get_clinics_images(request):
         serializer = ClinicImagesSerializer(clinic_images, many=True)
         data = serializer.data
 
-        # Add location and formatted date to each item
+        
         for image in data:
             image["location"] = f"{clinic.city}, {clinic.province}"
             image["formatted_date"] = localtime(clinic.registered_at).strftime("%B %d, %Y")
         
-        print(data)
+     
         return Response(data, status=200)
 
     except Clinics.DoesNotExist:

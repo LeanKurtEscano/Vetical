@@ -61,7 +61,15 @@ export const getClinicImages = async (): Promise<ClinicImageData[]> => {
 };
 
 
+export const deleteData = async(data : any, url: String) => {
 
+  const response = await vetApi.post(`/${url}/`,{
+    data: data
+  })
+  
+  return response
+
+}
 
 
 

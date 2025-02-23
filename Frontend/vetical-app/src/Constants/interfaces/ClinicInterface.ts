@@ -22,6 +22,7 @@ export interface ClinicImageData {
   id: number;
   image: string;
   uploaded_at: string;
+  clinic: number;
   location: String;
   formatted_date: String;
 }

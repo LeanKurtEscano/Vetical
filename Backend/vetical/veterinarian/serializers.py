@@ -10,7 +10,7 @@ class SpecializationSerializer(serializers.ModelSerializer):
 class ClinicImagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClinicImages
-        fields = ["id", "image", "uploaded_at"]
+        fields = '__all__'
 
         
 class ClinicSerializer(serializers.ModelSerializer):

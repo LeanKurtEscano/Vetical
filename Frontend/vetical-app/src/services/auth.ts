@@ -6,7 +6,7 @@ interface loginDetails {
   email: string;
   password: string;
 }
-
+import { UserDetails } from '../constants/interfaces/AuthInterface';
 
 
 export const loginAuth = async(data: loginDetails) => {
@@ -81,7 +81,7 @@ export const logOut = async()  => {
 }
 
 
-import { UserDetails } from '../constants/interfaces/AuthInterface';
+
 
 export const fetchUserDetails = async (): Promise<UserDetails> => {
   const response = await apiToken.get('/account/');

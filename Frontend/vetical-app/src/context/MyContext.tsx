@@ -50,8 +50,6 @@ export const MyProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       };
   });
  
-  console.log(clinicData)
-
   useEffect(() => {
     const { images, ...dataWithoutImages } = clinicData;
     sessionStorage.setItem("clinicData", JSON.stringify(dataWithoutImages));
