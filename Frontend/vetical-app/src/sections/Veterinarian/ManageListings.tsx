@@ -16,7 +16,7 @@ export default function ManageListings() {
   const queryClient = useQueryClient();
   const { data, isLoading, isError, error } = useQuery<ClinicImageData[]>(["clinicImages"], getClinicImages);
 
- 
+  console.log(data);
   const deleteMutation = useMutation(deleteData, {
     onSuccess: () => {
       queryClient.invalidateQueries(["clinicImages"]);
@@ -40,7 +40,7 @@ export default function ManageListings() {
   const cleanImageUrl = (url: string) => url.replace("image/upload/", "");
 
   const goToClinicDetails =  (id : number) => {
-    navigate(`/clinic/${id}`);
+    navigate(`/manage-listings/${id}`);
   }
 
   const handleDeleteClick = (id: number) => {
@@ -98,7 +98,7 @@ export default function ManageListings() {
               </div>
 
               <button
-                onClick={() => handleDeleteClick(listing.clinic)}
+                onClick={(e) => { handleDeleteClick(listing.clinic); e.stopPropagation() }}
                 className="absolute top-2 sm:top-3 right-2 sm:right-3 p-1 sm:p-1.5 px-2 sm:px-3 cursor-pointer bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition duration-200"
               >
                 <FontAwesomeIcon icon={faTrash} />

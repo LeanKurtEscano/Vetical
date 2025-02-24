@@ -99,6 +99,7 @@ def register_clinic(request):
         zip_code = request.data.get('zipCode', '').strip()
         province = request.data.get('province', '').strip()
         selected_services = request.data.get('selectedServices', '')
+        
 
       
         selected_services_list = [int(x) for x in selected_services.split(",") if x.strip().isdigit()]
@@ -176,24 +177,41 @@ def get_veterinarian_clinics(request):
 
 from django.utils.timezone import localtime
 
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from django.utils.timezone import localtime
+from rest_framework.permissions import IsAuthenticated
+from .models import Veterinarian, Clinics, ClinicImages
+from .serializers import ClinicSerializer
+
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from django.utils.timezone import localtime
+from rest_framework.permissions import IsAuthenticated
+from .models import Veterinarian, Clinics, ClinicImages
+from .serializers import ClinicSerializer
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_clinics_images(request):
     try:
+        # Fetch veterinarian and clinic
         vet = Veterinarian.objects.get(user=request.user)
         clinic = Clinics.objects.get(veterinarian=vet.id)
+
         clinic_images = ClinicImages.objects.filter(clinic=clinic.id)
+        image_urls = [str(image.image) for image in clinic_images] 
+ 
+        serializer = ClinicSerializer(clinic)
 
-        serializer = ClinicImagesSerializer(clinic_images, many=True)
-        data = serializer.data
-
+        # Add custom fields (location, formatted_date, images)
+        clinic_data = serializer.data
+        clinic_data["location"] = f"{clinic.city}, {clinic.province}"
+        clinic_data["formatted_date"] = localtime(clinic.registered_at).strftime("%B %d, %Y")
+        clinic_data["images"] = image_urls  # Overwrite images with only URLs
         
-        for image in data:
-            image["location"] = f"{clinic.city}, {clinic.province}"
-            image["formatted_date"] = localtime(clinic.registered_at).strftime("%B %d, %Y")
-        
-     
-        return Response(data, status=200)
+        print(clinic_data)
+        return Response(clinic_data, status=200)
 
     except Clinics.DoesNotExist:
         return Response({"error": "Clinic not found"}, status=404)
@@ -204,14 +222,17 @@ def get_clinics_images(request):
 
 
 @api_view(["GET", "DELETE"])
+@permission_classes([IsAuthenticated])
 def clinic_detail(request, clinic_id):
     try:
-        clinic = Clinics.objects.get(id=clinic_id)
+        clinic = Clinics.objects.get(id=int(clinic_id))
     except Clinics.DoesNotExist:
         return Response({"error": "Clinic not found"}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == "GET":
         serializer = ClinicSerializer(clinic)
+        
+        print(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == "DELETE":

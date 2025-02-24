@@ -66,7 +66,7 @@ export const deleteData = async (id: number) => {
   return response;
 };
 
-export const getClinicDetails = async (id: number) => {
+export const getClinicDetails = async (id: string) => {
   try {
     const response = await vetApi.get(`/clinic/${id}/`);
     return response.data ?? []; 
