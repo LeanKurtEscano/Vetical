@@ -66,7 +66,15 @@ export const deleteData = async (id: number) => {
   return response;
 };
 
-
+export const getClinicDetails = async (id: number) => {
+  try {
+    const response = await vetApi.get(`/clinic/${id}/`);
+    return response.data ?? []; 
+  } catch (error) {
+    console.error("Error fetching clinic images:", error);
+    return []; 
+  }
+};
 
 
 

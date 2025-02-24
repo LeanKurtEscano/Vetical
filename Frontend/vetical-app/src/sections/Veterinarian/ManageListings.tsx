@@ -16,10 +16,10 @@ export default function ManageListings() {
   const queryClient = useQueryClient();
   const { data, isLoading, isError, error } = useQuery<ClinicImageData[]>(["clinicImages"], getClinicImages);
 
-  // Mutation for deleting a clinic listing
+ 
   const deleteMutation = useMutation(deleteData, {
     onSuccess: () => {
-      queryClient.invalidateQueries(["clinicImages"]); // This triggers a refetch
+      queryClient.invalidateQueries(["clinicImages"]);
     },
   });
 
@@ -38,6 +38,10 @@ export default function ManageListings() {
     );
 
   const cleanImageUrl = (url: string) => url.replace("image/upload/", "");
+
+  const goToClinicDetails =  (id : number) => {
+    navigate(`/clinic/${id}`);
+  }
 
   const handleDeleteClick = (id: number) => {
     setSelectedId(id);
@@ -73,6 +77,8 @@ export default function ManageListings() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {data.map((listing) => (
             <div
+
+            onClick={() => goToClinicDetails(listing.clinic)}
               key={listing.id}
               className="relative bg-white p-3 sm:p-4 cursor-pointer rounded-xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden"
             >

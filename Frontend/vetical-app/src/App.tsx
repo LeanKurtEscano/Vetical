@@ -18,6 +18,8 @@ import VetDashboard from './sections/Veterinarian/VetDashboard';
 import VetNav from './layouts/Veterinarian/VetNav';
 import ClinicRegistration from './sections/Veterinarian/ClinicRegistration';
 import ManageListings from './sections/Veterinarian/ManageListings';
+import DarkModeCards from './sections/DarkModeCards';
+import Clinic from './sections/Veterinarian/Clinic';
 function App() {
   return (
     <MyProvider>
@@ -61,6 +63,8 @@ const Main: React.FC = () => {
           <Route path="/register-vet" element={<VetRegistration />} />
           <Route path="/register-clinic" element={<ClinicRegistration />} />
           <Route path="/manage-listings" element={<ManageListings />} />
+          <Route path="/manage-listings/:clinicId" element={<Clinic />} />
+           <Route path="/test" element={<DarkModeCards />} />
         </Routes>
       </>
 
