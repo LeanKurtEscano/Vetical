@@ -20,7 +20,7 @@ export interface ClinicRegistration {
 
 export interface ClinicImageData {
   id: number;
-  image: string;
+  images: string[];
   uploaded_at: string;
   clinic: number;
   location: String;

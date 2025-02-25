@@ -78,13 +78,13 @@ export default function ManageListings() {
           {data.map((listing) => (
             <div
 
-            onClick={() => goToClinicDetails(listing.clinic)}
+            onClick={() => goToClinicDetails(listing.id)}
               key={listing.id}
               className="relative bg-white p-3 sm:p-4 cursor-pointer rounded-xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden"
             >
               <div className="w-full h-48 sm:h-56 rounded-lg overflow-hidden">
                 <img
-                  src={cleanImageUrl(listing.image)}
+                  src={cleanImageUrl(listing.images[0])}
                   alt="Clinic"
                   className="w-full h-full object-cover"
                 />

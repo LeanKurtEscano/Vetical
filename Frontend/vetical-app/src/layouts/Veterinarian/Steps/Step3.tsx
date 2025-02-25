@@ -4,17 +4,6 @@ import { useMyContext } from "../../../context/MyContext";
 import { ClinicRegistration } from "../../../constants/interfaces/ClinicInterface";
 const Step3 = ({ nextStep, prevStep }: { nextStep: () => void; prevStep: () => void }) => {
     const { clinicData, setClinicData } = useMyContext();
-    const [formData, setFormData] = useState({
-        unit: "",
-        building: "",
-        streetAddress: "",
-        barangay: "",
-        city: "",
-        zipCode: "",
-        province: "",
-        country: "Philippines - PH",
-       
-    });
 
 
 
@@ -30,7 +19,7 @@ const Step3 = ({ nextStep, prevStep }: { nextStep: () => void; prevStep: () => v
 
     useEffect(() => {
         const address = sessionStorage.getItem("address") || "";
-        setFormData((prev) => ({
+        setClinicData((prev: ClinicRegistration) => ({
             ...prev, streetAddress: address
         }))
     },[])
@@ -40,12 +29,12 @@ const Step3 = ({ nextStep, prevStep }: { nextStep: () => void; prevStep: () => v
     return (
         <form className="space-y-3 p-3 text-sm">
             <h2 className="text-lg font-semibold">Confirm Your Clinic Address</h2>
-            <select name="country" value={formData.country} className="w-full p-2 border rounded-md">
+            <select name="country" value={clinicData.country} className="w-full p-2 border rounded-md">
                 <option>Philippines - PH</option>
             </select>
             <input name="unit" value={clinicData.unit} onChange = {handleChange}placeholder="Unit, Level (if applicable)" className="w-full p-2 border rounded-md" />
             <input name="building"  value={clinicData.building} onChange = {handleChange} placeholder="Building Name (if applicable)" className="w-full p-2 border rounded-md" />
-            <input name="streetAddress" value={formData.streetAddress} onChange={handleChange} placeholder="Street Address" className="w-full p-2 border rounded-md" />
+            <input name="streetAddress" value={clinicData.streetAddress} onChange={handleChange} placeholder="Street Address" className="w-full p-2 border rounded-md" />
         
 
             <input name="barangay"  value={clinicData.barangay} onChange = {handleChange} placeholder="Barangay / District" className="w-full p-2 border rounded-md" />

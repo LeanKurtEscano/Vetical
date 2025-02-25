@@ -195,7 +195,7 @@ from .serializers import ClinicSerializer
 @permission_classes([IsAuthenticated])
 def get_clinics_images(request):
     try:
-        # Fetch veterinarian and clinic
+    
         vet = Veterinarian.objects.get(user=request.user)
         clinic = Clinics.objects.get(veterinarian=vet.id)
 
@@ -204,14 +204,17 @@ def get_clinics_images(request):
  
         serializer = ClinicSerializer(clinic)
 
-        # Add custom fields (location, formatted_date, images)
+    
         clinic_data = serializer.data
         clinic_data["location"] = f"{clinic.city}, {clinic.province}"
         clinic_data["formatted_date"] = localtime(clinic.registered_at).strftime("%B %d, %Y")
-        clinic_data["images"] = image_urls  # Overwrite images with only URLs
+        clinic_data["images"] = image_urls  
         
-        print(clinic_data)
-        return Response(clinic_data, status=200)
+      
+        clinic_array = [clinic_data]
+      
+        
+        return Response(clinic_array, status=200)
 
     except Clinics.DoesNotExist:
         return Response({"error": "Clinic not found"}, status=404)
@@ -231,8 +234,7 @@ def clinic_detail(request, clinic_id):
 
     if request.method == "GET":
         serializer = ClinicSerializer(clinic)
-        
-        print(serializer.data)
+      
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == "DELETE":
