@@ -1,39 +1,32 @@
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getClinicDetails } from "../../services/Vet";
-
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { getClinicDetails, updateClinicDetails, uploadClinicImage } from "../../services/Vet";
+import Carousel from "../../components/Carousel";
 const Clinic: React.FC = () => {
-    const { clinicId } = useParams<{ clinicId?: string }>(); // Ensure clinicId can be undefined
-
-    console.log("Clinic ID:", clinicId); // Debugging
+    const { clinicId } = useParams<{ clinicId?: string }>();
+    const queryClient = useQueryClient();
 
     const { data, isLoading, isError } = useQuery({
-        queryKey: ["clinicProfile", clinicId], // Include clinicId to refetch data properly
-        queryFn: () => clinicId ? getClinicDetails(clinicId) : Promise.reject("No clinic ID"),
-        enabled: !!clinicId, // Prevents query from running if clinicId is undefined
-        retry: 1, // Optional: Limits retries to avoid infinite fetch loops
+        queryKey: ["clinicProfile", clinicId],
+        queryFn: () => (clinicId ? getClinicDetails(clinicId) : Promise.reject("No clinic ID")),
+        enabled: !!clinicId,
+        retry: 1,
     });
-    
-    console.log(data)
 
+   
+ 
+    if (isLoading) return <p>Loading...</p>;
+    if (isError || !data) return <p>Error fetching clinic details.</p>;
 
     return (
-        <div>
-            <h1>Clinic Profile</h1>
-            <p>Here, you can find information about the clinic.</p>
+        <section className="w-full min-h-screen h-auto">
+            <Carousel imageUrls = {data.image} />
 
-            {isLoading && <div>Loading...</div>}
-            {isError && <div>Error: Unable to fetch clinic details</div>}
-
-            {data && (
-                <div>
-                    <h2>{data.name}</h2>
-                    <p>Address: {data.address}</p>
-                    <p>Contact: {data.phone}</p>
-                </div>
-            )}
-        </div>
+        </section>
     );
 };
 
 export default Clinic;
+
+

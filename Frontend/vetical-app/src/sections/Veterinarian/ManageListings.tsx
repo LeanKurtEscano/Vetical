@@ -16,7 +16,6 @@ export default function ManageListings() {
   const queryClient = useQueryClient();
   const { data, isLoading, isError, error } = useQuery<ClinicImageData[]>(["clinicImages"], getClinicImages);
 
-  console.log(data);
   const deleteMutation = useMutation(deleteData, {
     onSuccess: () => {
       queryClient.invalidateQueries(["clinicImages"]);

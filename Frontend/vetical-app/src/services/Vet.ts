@@ -78,3 +78,10 @@ export const getClinicDetails = async (id: string) => {
 
 
 
+export const updateClinicDetails = (id:number, data:any) => {
+
+}
+
+export const uploadClinicImage = (id:number, data:any) => {
+
+}

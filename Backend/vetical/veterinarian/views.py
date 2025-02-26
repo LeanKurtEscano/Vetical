@@ -10,7 +10,7 @@ from user_auth.models import CustomUser
 import cloudinary.uploader
 from .models import Clinics, ClinicImages, ClinicServices
 from .serializers import ClinicSerializer,ClinicImagesSerializer
-
+from django.utils.timezone import localtime
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_specializations(request):
@@ -175,21 +175,8 @@ def get_veterinarian_clinics(request):
         return Response({"error": str(e)}, status=500)
 
 
-from django.utils.timezone import localtime
 
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
-from django.utils.timezone import localtime
-from rest_framework.permissions import IsAuthenticated
-from .models import Veterinarian, Clinics, ClinicImages
-from .serializers import ClinicSerializer
 
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
-from django.utils.timezone import localtime
-from rest_framework.permissions import IsAuthenticated
-from .models import Veterinarian, Clinics, ClinicImages
-from .serializers import ClinicSerializer
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -212,6 +199,8 @@ def get_clinics_images(request):
         
       
         clinic_array = [clinic_data]
+        
+        print(clinic_array)
       
         
         return Response(clinic_array, status=200)
@@ -234,6 +223,7 @@ def clinic_detail(request, clinic_id):
 
     if request.method == "GET":
         serializer = ClinicSerializer(clinic)
+        print(serializer.data)
       
         return Response(serializer.data, status=status.HTTP_200_OK)
 
