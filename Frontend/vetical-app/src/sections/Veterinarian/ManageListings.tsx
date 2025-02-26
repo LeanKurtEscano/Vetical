@@ -8,6 +8,7 @@ import { LoadingAnimation } from "../../components/LoadingAnimation";
 import { ClinicImageData } from "../../constants/interfaces/ClinicInterface";
 import useModal from "../../hooks/useModal";
 import DeleteModal from "../../components/DeleteModal";
+import { cleanImageUrl } from "../../utils/images";
 
 export default function ManageListings() {
   const navigate = useNavigate();
@@ -36,7 +37,6 @@ export default function ManageListings() {
       </div>
     );
 
-  const cleanImageUrl = (url: string) => url.replace("image/upload/", "");
 
   const goToClinicDetails =  (id : number) => {
     navigate(`/manage-listings/${id}`);
