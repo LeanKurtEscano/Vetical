@@ -1,28 +1,40 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { getClinicDetails } from "../../services/Vet";
+import { getClinicDetails, uploadClinicImage } from "../../services/Vet";
 import { ImageData } from "../../constants/interfaces/ImageInterface";
 import { cleanImageUrl } from "../../utils/images";
 import { faArrowLeft, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { LoadingAnimation } from "../../components/LoadingAnimation";
-import { uploadClinicImage } from "../../services/Vet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { deleteData } from "../../services/Vet";
+import { LoadingAnimation } from "../../components/LoadingAnimation";
+
 const Clinic: React.FC = () => {
     const { clinicId } = useParams<{ clinicId?: string }>();
-    const navigate = useNavigate(); // Initialize navigation
+    const navigate = useNavigate(); 
     const queryClient = useQueryClient();
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ["clinicProfile", clinicId],
-        queryFn: () => (clinicId ? getClinicDetails(clinicId) : Promise.reject("No clinic ID")),
-        enabled: !!clinicId,
+        queryFn: async () => {
+            return getClinicDetails(clinicId!); 
+        },
+        enabled: !!clinicId, 
         retry: 1,
     });
-    if (isLoading) return <LoadingAnimation />;
-    if (isError || !data || !data.images) return <p>Error fetching clinic details.</p>;
 
-    // Mock image URLs if none are provided (for layout testing)
+    const uploadImageMutation = useMutation({
+        mutationFn: async (file: File) => {
+            const formData = new FormData();
+            formData.append("image", file);
+            return uploadClinicImage(clinicId!, formData);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(["clinicProfile", clinicId]);
+        },
+    });
+
+    if (isLoading) return <LoadingAnimation />;
+    if (isError || !data) return <p>Error fetching clinic details.</p>;
+
     const mockImages = [
         "https://via.placeholder.com/500",
         "https://via.placeholder.com/400",
@@ -31,47 +43,19 @@ const Clinic: React.FC = () => {
         "https://via.placeholder.com/150",
     ];
 
-
-    const uploadImageMutation = useMutation({
-        mutationFn: async (file: File) => {
-            const formData = new FormData();
-            formData.append("image", file);
-
-            const response = await uploadClinicImage(clinicId!, formData);
-
-            console.log(response.data);
-
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries(["clinicProfile", clinicId]);
-        },
-    });
-
-
-    const deleteMutation = useMutation(deleteData, {
-        onSuccess: () => {
-            queryClient.invalidateQueries(["clinicProfile", clinicId])
-        }
-    })
+    const images: string[] = data?.images?.length
+        ? data.images.map((item: ImageData) => cleanImageUrl(item.image))
+        : mockImages;
 
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
-
         uploadImageMutation.mutate(file);
     };
 
-    // Ensure we have images (use mock data if empty)
-    const images: string[] = data.images.length
-        ? data.images.map((item: ImageData) => cleanImageUrl(item.image))
-        : mockImages;
-
-    const doubledImages = [...images, ...images, ...images];
-
     return (
         <section className="w-full min-h-screen h-auto flex flex-col relative">
-
             <div className="flex pl-12">
                 <button
                     onClick={() => navigate('/manage-listings')}
@@ -100,21 +84,19 @@ const Clinic: React.FC = () => {
                 />
             </div>
 
-
             <div className="w-1/2 mb-3 pl-40 flex">
                 <h1 className="font-bold text-4xl">{data.clinic_name}</h1>
             </div>
 
             <div className="grid grid-cols-3 pl-40 grid-rows-2 gap-2 max-w-6xl w-full">
                 <div className="col-span-1 row-span-2">
-                    <img src={doubledImages[0]} className="w-full h-full max-h-[500px] object-cover rounded-md" alt="Main Image" />
+                    <img src={images[0]} className="w-full h-full max-h-[500px] object-cover rounded-md" alt="Main Image" />
                 </div>
 
-                {doubledImages.slice(1, 5).map((img, index) => (
+                {images.slice(1, 5).map((img, index) => (
                     <div key={index} className="relative w-80% h-40">
                         <img src={img} className="w-full h-full object-cover rounded-md" alt={`Image ${index + 1}`} />
-
-                        {index === 3 && doubledImages.length > 5 && (
+                        {index === 3 && images.length > 5 && (
                             <button className="absolute inset-0 bg-gray-300 cursor-pointer flex items-center justify-center text-white text-lg font-bold rounded-md 
                                 transition-all duration-300 ease-in-out hover:bg-gray-400">
                                 Show all photos
