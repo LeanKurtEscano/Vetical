@@ -177,40 +177,36 @@ def get_veterinarian_clinics(request):
 
 
 
-
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_clinics_images(request):
     try:
-    
         vet = Veterinarian.objects.get(user=request.user)
-        clinic = Clinics.objects.get(veterinarian=vet.id)
+        clinics = Clinics.objects.filter(veterinarian=vet.id) 
 
-        clinic_images = ClinicImages.objects.filter(clinic=clinic.id)
-        image_urls = [str(image.image) for image in clinic_images] 
- 
-        serializer = ClinicSerializer(clinic)
+        if not clinics.exists():
+            return Response({"error": "No clinics found"}, status=404)
 
-    
-        clinic_data = serializer.data
-        clinic_data["location"] = f"{clinic.city}, {clinic.province}"
-        clinic_data["formatted_date"] = localtime(clinic.registered_at).strftime("%B %d, %Y")
-        clinic_data["images"] = image_urls  
-        
-      
-        clinic_array = [clinic_data]
-        
-        print(clinic_array)
-      
-        
+        clinic_array = []
+
+        for clinic in clinics:
+            clinic_images = ClinicImages.objects.filter(clinic=clinic.id)
+            image_urls = [str(image.image) for image in clinic_images]
+
+            serializer = ClinicSerializer(clinic)
+            clinic_data = serializer.data
+            clinic_data["location"] = f"{clinic.city}, {clinic.province}"
+            clinic_data["formatted_date"] = localtime(clinic.registered_at).strftime("%B %d, %Y")
+            clinic_data["images"] = image_urls  
+
+            clinic_array.append(clinic_data) 
         return Response(clinic_array, status=200)
 
-    except Clinics.DoesNotExist:
-        return Response({"error": "Clinic not found"}, status=404)
-
+ 
     except Exception as e:
         print(f"Error: {e}")
         return Response({"error": str(e)}, status=500)
+
 
 
 @api_view(["GET", "DELETE"])
@@ -230,3 +226,32 @@ def clinic_detail(request, clinic_id):
     elif request.method == "DELETE":
         clinic.delete()
         return Response({"message": "Clinic deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
+
+
+
+@api_view(["POST"])
+@parser_classes([MultiPartParser, FormParser])
+@permission_classes([IsAuthenticated])
+def upload_new_image(request, clinic_id):
+    try:
+      
+        clinic = Clinics.objects.get(id=clinic_id, veterinarian__user=request.user)
+
+       
+        if "image" not in request.FILES:
+            return Response({"error": "No image provided"}, status=400)
+
+        image = request.FILES["image"]
+
+        uploaded_image = cloudinary.uploader.upload(image)
+        ClinicImages.objects.create(clinic=clinic, image=uploaded_image['secure_url'])
+
+        return Response({"message": "Image uploaded successfully"}, status=201)
+
+    except Clinics.DoesNotExist:
+        return Response({"error": "Clinic not found"}, status=404)
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return Response({"error": str(e)}, status=500)

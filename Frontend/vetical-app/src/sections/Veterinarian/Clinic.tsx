@@ -1,14 +1,17 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { getClinicDetails } from "../../services/Vet";
 import { ImageData } from "../../constants/interfaces/ImageInterface";
 import { cleanImageUrl } from "../../utils/images";
+import { faArrowLeft, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { LoadingAnimation } from "../../components/LoadingAnimation";
+import { uploadClinicImage } from "../../services/Vet";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-
+import { deleteData } from "../../services/Vet";
 const Clinic: React.FC = () => {
     const { clinicId } = useParams<{ clinicId?: string }>();
     const navigate = useNavigate(); // Initialize navigation
+    const queryClient = useQueryClient();
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ["clinicProfile", clinicId],
@@ -16,8 +19,7 @@ const Clinic: React.FC = () => {
         enabled: !!clinicId,
         retry: 1,
     });
-
-    if (isLoading) return <p>Loading...</p>;
+    if (isLoading) return <LoadingAnimation />;
     if (isError || !data || !data.images) return <p>Error fetching clinic details.</p>;
 
     // Mock image URLs if none are provided (for layout testing)
@@ -29,43 +31,85 @@ const Clinic: React.FC = () => {
         "https://via.placeholder.com/150",
     ];
 
+
+    const uploadImageMutation = useMutation({
+        mutationFn: async (file: File) => {
+            const formData = new FormData();
+            formData.append("image", file);
+
+            const response = await uploadClinicImage(clinicId!, formData);
+
+            console.log(response.data);
+
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(["clinicProfile", clinicId]);
+        },
+    });
+
+
+    const deleteMutation = useMutation(deleteData, {
+        onSuccess: () => {
+            queryClient.invalidateQueries(["clinicProfile", clinicId])
+        }
+    })
+
+
+    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        uploadImageMutation.mutate(file);
+    };
+
     // Ensure we have images (use mock data if empty)
     const images: string[] = data.images.length
         ? data.images.map((item: ImageData) => cleanImageUrl(item.image))
         : mockImages;
 
-    // Duplicate images to see many in the layout
     const doubledImages = [...images, ...images, ...images];
 
     return (
-        <section className="w-full min-h-screen h-auto flex flex-col ">
-            {/* Go Back Button */}
-          <div className="flex pl-12 ">
-          <button
-                    onClick={() => navigate(-1)} // Navigate back
+        <section className="w-full min-h-screen h-auto flex flex-col relative">
+
+            <div className="flex pl-12">
+                <button
+                    onClick={() => navigate('/manage-listings')}
                     className="flex items-center text-gray-600 cursor-pointer hover:text-black transition-all"
                 >
                     <FontAwesomeIcon icon={faArrowLeft} className="w-5 h-5 mr-2" />
                     <span className="text-lg font-medium">Go back</span>
                 </button>
-          
+            </div>
 
-          </div>
-               
+            <div className="w-[150px] absolute pt-8 right-48">
+                <label
+                    htmlFor="file-upload"
+                    className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 bg-white rounded-full shadow-md hover:bg-gray-100 cursor-pointer transition-all"
+                >
+                    <FontAwesomeIcon icon={faPlus} className="w-4 h-4" />
+                    <span className="text-sm font-medium">Add Image</span>
+                </label>
+                <input
+                    id="file-upload"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={handleImageUpload}
+                />
+            </div>
 
-            {/* Title */}
-            <div className="w-1/2 pl-40 flex">
+
+            <div className="w-1/2 mb-3 pl-40 flex">
                 <h1 className="font-bold text-4xl">{data.clinic_name}</h1>
             </div>
 
-            {/* Image Grid */}
             <div className="grid grid-cols-3 pl-40 grid-rows-2 gap-2 max-w-6xl w-full">
-                {/* Large Main Image */}
                 <div className="col-span-1 row-span-2">
                     <img src={doubledImages[0]} className="w-full h-full max-h-[500px] object-cover rounded-md" alt="Main Image" />
                 </div>
 
-                {/* Smaller Images (2x2) */}
                 {doubledImages.slice(1, 5).map((img, index) => (
                     <div key={index} className="relative w-80% h-40">
                         <img src={img} className="w-full h-full object-cover rounded-md" alt={`Image ${index + 1}`} />

@@ -12,6 +12,7 @@ import {
   faSpider 
 } from '@fortawesome/free-solid-svg-icons';
 
+
 const categories = [
   { id: 1, name: 'Dogs', icon: faDog },
   { id: 2, name: 'Cats', icon: faCat },

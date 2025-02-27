@@ -82,6 +82,17 @@ export const updateClinicDetails = (id:number, data:any) => {
 
 }
 
-export const uploadClinicImage = (id:number, data:any) => {
-
+export const uploadClinicImage = async(id:string, data:FormData) => {
+  const response = await vetApi.post(`/clinic/${id}/upload/`,
+    data
+    , {
+    headers: {
+      "Content-Type": "multipart/form-data", 
+    }
+  }
+    
+  );
+  return response
+     
+   
 }
