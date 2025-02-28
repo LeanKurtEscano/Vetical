@@ -1,4 +1,3 @@
-
 from rest_framework import status
 from rest_framework.response import Response
 from .serializers import SpecializationSerializer
@@ -11,6 +10,7 @@ import cloudinary.uploader
 from .models import Clinics, ClinicImages, ClinicServices
 from .serializers import ClinicSerializer,ClinicImagesSerializer
 from django.utils.timezone import localtime
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_specializations(request):
@@ -74,6 +74,7 @@ def register_vet(request):
     except Exception as e:
         print(f"{e}")
         return Response({"error": "Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
         
 @api_view(['POST'])
 @parser_classes([MultiPartParser, FormParser])

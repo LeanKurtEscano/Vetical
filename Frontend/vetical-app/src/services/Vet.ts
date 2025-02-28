@@ -1,6 +1,9 @@
 
 import { vetApi } from "./axiosConfig"
 import { FormDatas } from "../constants/interfaces/VetInterface";
+import { ClinicImageData } from "../constants/interfaces/ClinicInterface";
+
+
 export const fetchSpecializations = async () => {
   try {
     const response = await vetApi.get("/specializations/");
@@ -10,7 +13,7 @@ export const fetchSpecializations = async () => {
     throw new Error("Failed to fetch specializations"); 
   }
 };
-import { ClinicImageData } from "../constants/interfaces/ClinicInterface";
+
 export const submitRegistration = async(data: FormDatas) => {
   try {
     const response = await vetApi.post("/register/vet/",{ data : data});
@@ -95,4 +98,10 @@ export const uploadClinicImage = async(id:string, data:FormData) => {
   return response
      
    
+}
+
+
+export const deleteClinicImage = async(id:number) => {
+  const response = await vetApi.delete(`/clinic/${id}/`);
+  return response;
 }

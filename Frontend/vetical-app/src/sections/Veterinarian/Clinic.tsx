@@ -6,19 +6,37 @@ import { cleanImageUrl } from "../../utils/images";
 import { faArrowLeft, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoadingAnimation } from "../../components/LoadingAnimation";
+import { deleteClinicImage } from "../../services/Vet";
+import { useState } from "react";
+import useModal from "../../hooks/useModal";
+import DeleteModal from "../../components/DeleteModal";
 
 const Clinic: React.FC = () => {
     const { clinicId } = useParams<{ clinicId?: string }>();
-    const navigate = useNavigate(); 
+    const [selectedId, setSelectedId] = useState<number | null>(null)
+    const { toggle, handleCancel, toggleModal } = useModal();
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ["clinicProfile", clinicId],
         queryFn: async () => {
-            return getClinicDetails(clinicId!); 
+            return getClinicDetails(clinicId!);
         },
-        enabled: !!clinicId, 
+        enabled: !!clinicId,
         retry: 1,
+    });
+
+
+    const deleteMutation = useMutation(deleteClinicImage, {
+        onSuccess: () => {
+            if (clinicId) {
+                queryClient.invalidateQueries(["clinicProfile", clinicId]);
+            }
+        },
+        onError: (error) => {
+            console.error("Error deleting clinic image:", error);
+        },
     });
 
     const uploadImageMutation = useMutation({
@@ -53,6 +71,21 @@ const Clinic: React.FC = () => {
         if (!file) return;
         uploadImageMutation.mutate(file);
     };
+
+
+    const handleSelectImage = (id: number) => {
+        setSelectedId(id);
+        toggleModal();
+    }
+
+
+    const handleDeleteImage = async () => {
+        if (selectedId !== null) {
+            await deleteMutation.mutateAsync(selectedId);
+            setSelectedId(null);
+            handleCancel();
+        }
+    }
 
     return (
         <section className="w-full min-h-screen h-auto flex flex-col relative">
@@ -105,6 +138,10 @@ const Clinic: React.FC = () => {
                     </div>
                 ))}
             </div>
+
+            {toggle && selectedId !== null && (
+                <DeleteModal onCancel={handleCancel} onConfirm={handleDeleteImage} id={selectedId} />
+            )}
         </section>
     );
 };
