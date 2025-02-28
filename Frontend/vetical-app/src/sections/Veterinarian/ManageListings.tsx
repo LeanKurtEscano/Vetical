@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { getClinicImages, deleteData } from "../../services/Vet";
+import { getClinicImages, deleteData } from "../../services/clinic";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { LoadingAnimation } from "../../components/LoadingAnimation";
 import { ClinicImageData } from "../../constants/interfaces/ClinicInterface";

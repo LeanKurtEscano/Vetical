@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useUserDetails from "../../hooks/useUserDetails";
 import { FormDatas, Specialization } from "../../constants/interfaces/VetInterface";
 import { useQuery } from "@tanstack/react-query";
-import { fetchSpecializations, submitRegistration } from "../../services/Vet";
+import { fetchSpecializations, submitRegistration } from "../../services/vet";
 import { LoadingAnimation } from "../../components/LoadingAnimation";
 import useRole from "../../hooks/useRole";
 import { useNavigate } from "react-router-dom";

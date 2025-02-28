@@ -1,4 +1,4 @@
-import { submitClinicRegistration } from "../../../services/Vet";
+import { submitClinicRegistration } from "../../../services/vet";
 import { useMyContext } from "../../../context/MyContext";
 import { useNavigate } from "react-router-dom";
 import { vetApi } from "../../../services/axiosConfig";

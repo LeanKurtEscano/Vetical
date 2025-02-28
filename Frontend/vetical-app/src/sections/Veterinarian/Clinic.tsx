@@ -1,12 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { getClinicDetails, uploadClinicImage } from "../../services/Vet";
+import { getClinicDetails, uploadClinicImage } from "../../services/clinic";
 import { ImageData } from "../../constants/interfaces/ImageInterface";
 import { cleanImageUrl } from "../../utils/images";
 import { faArrowLeft, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoadingAnimation } from "../../components/LoadingAnimation";
-import { deleteClinicImage } from "../../services/Vet";
+import { deleteClinicImage } from "../../services/clinic";
 import { useState } from "react";
 import useModal from "../../hooks/useModal";
 import DeleteModal from "../../components/DeleteModal";
@@ -127,7 +127,7 @@ const Clinic: React.FC = () => {
                 </div>
 
                 {images.slice(1, 5).map((img, index) => (
-                    <div key={index} className="relative w-80% h-40">
+                    <div  key={index} className="relative w-80% h-40">
                         <img src={img} className="w-full h-full object-cover rounded-md" alt={`Image ${index + 1}`} />
                         {index === 3 && images.length > 5 && (
                             <button className="absolute inset-0 bg-gray-300 cursor-pointer flex items-center justify-center text-white text-lg font-bold rounded-md 

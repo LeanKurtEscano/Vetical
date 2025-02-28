@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import  Veterinarian
 from rest_framework.parsers import MultiPartParser, FormParser
 import cloudinary.uploader
-from .models import Clinics, ClinicImages, ClinicServices
+from veterinarian.models import Clinics, ClinicImages, ClinicServices
 from .serializers import ClinicSerializer,ClinicImagesSerializer
 from django.utils.timezone import localtime
 

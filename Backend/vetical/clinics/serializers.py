@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Clinics, ClinicImages
+from veterinarian.models import Clinics, ClinicImages
 
 
         

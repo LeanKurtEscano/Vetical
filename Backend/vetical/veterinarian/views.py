@@ -61,20 +61,6 @@ def register_vet(request):
         return Response({"error": "Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
    
-
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def register_vet(request):
-    try:
-      data = request.data.get("data")
-      print(data)
-      
-      return Response({"success": "ADASDADA"},status=status.HTTP_200_OK)
-        
-    except Exception as e:
-        print(f"{e}")
-        return Response({"error": "Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
         
 @api_view(['POST'])
 @parser_classes([MultiPartParser, FormParser])
