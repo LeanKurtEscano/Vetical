@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'veterinarian',
     'cloudinary',
     'cloudinary_storage',
+    'clinics',
 ]
 
 AUTHENTICATION_BACKENDS = (
