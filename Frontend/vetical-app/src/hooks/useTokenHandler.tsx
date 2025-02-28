@@ -8,21 +8,28 @@ const useTokenHandler = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const validateToken = async () => {
+    const checkStoredToken = async () => {
+      const storedToken = localStorage.getItem("access_token");
+
+      if (!storedToken) {
+        setIsAuthenticated(false);
+        navigate("/");
+        return;
+      }
+
       try {
         const authStatus = await userAuth();
         setIsAuthenticated(authStatus);
-       
       } catch (error) {
         console.log(`Token validation failed: ${error}`);
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
         setIsAuthenticated(false);
         navigate("/");
-      } 
+      }
     };
 
-    validateToken();
+    checkStoredToken();
   }, [setIsAuthenticated, navigate]);
 };
 
