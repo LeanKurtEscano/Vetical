@@ -10,18 +10,22 @@ import useModal from "../../hooks/useModal";
 import DeleteModal from "../../components/DeleteModal";
 import { cleanImageUrl } from "../../utils/images";
 
+
+
 export default function ManageListings() {
   const navigate = useNavigate();
   const { toggle, handleCancel, toggleModal } = useModal();
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const queryClient = useQueryClient();
   const { data, isLoading, isError, error } = useQuery<ClinicImageData[]>(["clinicImages"], getClinicImages);
-
+  console.log(data);
   const deleteMutation = useMutation(deleteData, {
     onSuccess: () => {
       queryClient.invalidateQueries(["clinicImages"]);
     },
   });
+  const placeholderImage = "https://via.placeholder.com/300x200/cccccc/ffffff?text=No+Image";
+
 
   if (isLoading)
     return (
@@ -37,10 +41,9 @@ export default function ManageListings() {
       </div>
     );
 
-
-  const goToClinicDetails =  (id : number) => {
+  const goToClinicDetails = (id: number) => {
     navigate(`/manage-listings/${id}`);
-  }
+  };
 
   const handleDeleteClick = (id: number) => {
     setSelectedId(id);
@@ -53,6 +56,11 @@ export default function ManageListings() {
       setSelectedId(null);
       handleCancel();
     }
+  };
+
+  // Function to get clinic image or placeholder
+  const getClinicImage = (images: string[]) => {
+    return images?.length > 0 ? cleanImageUrl(images[0]) : placeholderImage;
   };
 
   return (
@@ -76,17 +84,22 @@ export default function ManageListings() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {data.map((listing) => (
             <div
-
-            onClick={() => goToClinicDetails(listing.id)}
+              onClick={() => goToClinicDetails(listing.id)}
               key={listing.id}
               className="relative bg-white p-3 sm:p-4 cursor-pointer rounded-xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden"
             >
               <div className="w-full h-48 sm:h-56 rounded-lg overflow-hidden">
-                <img
-                  src={cleanImageUrl(listing.images[0])}
-                  alt="Clinic"
-                  className="w-full h-full object-cover"
-                />
+                {listing.images.length === 0 ? (
+                  <p>No image available</p>
+                ) : (
+                  <img
+                    src={getClinicImage(listing.images)}
+                    alt="Clinic"
+                    className="w-full h-full object-cover"
+                  />
+                )}
+
+
               </div>
 
               <div className="mt-2 sm:mt-3">
@@ -97,7 +110,10 @@ export default function ManageListings() {
               </div>
 
               <button
-                onClick={(e) => { handleDeleteClick(listing.clinic); e.stopPropagation() }}
+                onClick={(e) => {
+                  handleDeleteClick(listing.clinic);
+                  e.stopPropagation();
+                }}
                 className="absolute top-2 sm:top-3 right-2 sm:right-3 p-1 sm:p-1.5 px-2 sm:px-3 cursor-pointer bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition duration-200"
               >
                 <FontAwesomeIcon icon={faTrash} />
