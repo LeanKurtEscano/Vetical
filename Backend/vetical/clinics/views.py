@@ -79,16 +79,17 @@ def get_clinics_images(request):
         print(f"Error: {e}")
         return Response({"error": str(e)}, status=500)
 
+
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
-def delete_clinic_images(request,id):
+def delete_clinic_images(request, id):
     try:
-        clinic_image = ClinicImages.objects.get(id = int(id))
+        clinic_image = ClinicImages.objects.get(id=int(id))
         clinic_image.delete()
-        
-    except Exception as e: 
-        print(f"{e}")
+        return Response({"message": "Image deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(["GET", "DELETE"])
 @permission_classes([IsAuthenticated])

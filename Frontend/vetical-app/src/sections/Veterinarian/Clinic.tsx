@@ -12,33 +12,23 @@ import useModal from "../../hooks/useModal";
 import DeleteModal from "../../components/DeleteModal";
 const Clinic: React.FC = () => {
     const { clinicId } = useParams<{ clinicId?: string }>();
-    const [selectedId, setSelectedId] = useState<number | null>(null)
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const { toggle, handleCancel, toggleModal } = useModal();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ["clinicProfile", clinicId],
-        queryFn: async () => {
-            return getClinicDetails(clinicId!);
-        },
+        queryFn: async () => getClinicDetails(clinicId!),
         enabled: !!clinicId,
         retry: 1,
     });
 
-    console.log(data)
-
-
-
     const deleteMutation = useMutation(deleteClinicImage, {
         onSuccess: () => {
-            if (clinicId) {
-                queryClient.invalidateQueries(["clinicProfile", clinicId]);
-            }
+            if (clinicId) queryClient.invalidateQueries(["clinicProfile", clinicId]);
         },
-        onError: (error) => {
-            console.error("Error deleting clinic image:", error);
-        },
+        onError: (error) => console.error("Error deleting clinic image:", error),
     });
 
     const uploadImageMutation = useMutation({
@@ -47,33 +37,23 @@ const Clinic: React.FC = () => {
             formData.append("image", file);
             return uploadClinicImage(clinicId!, formData);
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries(["clinicProfile", clinicId]);
-        },
+        onSuccess: () => queryClient.invalidateQueries(["clinicProfile", clinicId]),
     });
 
     if (isLoading) return <LoadingAnimation />;
     if (isError || !data) return <p>Error fetching clinic details.</p>;
 
-    const mockImages = [
-        "https://via.placeholder.com/500",
-        "https://via.placeholder.com/400",
-        "https://via.placeholder.com/300",
-        "https://via.placeholder.com/200",
-        "https://via.placeholder.com/150",
-    ];
+    const placeholderImage = "https://via.placeholder.com/300?text=No+Image";
 
-    
 
+
+    // Process clinic images
     const images: ImageData[] = data?.images?.length
-    ? data.images.map((img: ImageData) => ({
-        ...img,
-        image: cleanImageUrl(img.image),
-      }))
-    : mockImages;
-
-    console.log(images)
-  
+        ? data.images.map((img: ImageData) => ({
+            ...img,
+            image: cleanImageUrl(img.image),
+        }))
+        : Array(5).fill({ id: -1, image: placeholderImage }); 
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -81,13 +61,10 @@ const Clinic: React.FC = () => {
         uploadImageMutation.mutate(file);
     };
 
-
     const handleSelectImage = (id: number) => {
         setSelectedId(id);
-        console.log(id);
         toggleModal();
-    }
-
+    };
 
     const handleDeleteImage = async () => {
         if (selectedId !== null) {
@@ -95,7 +72,7 @@ const Clinic: React.FC = () => {
             setSelectedId(null);
             handleCancel();
         }
-    }
+    };
 
     return (
         <section className="w-full min-h-screen h-auto flex flex-col relative">
@@ -131,28 +108,49 @@ const Clinic: React.FC = () => {
                 <h1 className="font-bold text-4xl">{data.clinic_name}</h1>
             </div>
 
+
             <div className="grid grid-cols-3 pl-40 grid-rows-2 gap-2 max-w-6xl w-full">
+               
                 <div className="col-span-1 row-span-2 relative">
                     <img
                         src={images[0].image}
                         className="w-full h-full max-h-[500px] object-cover rounded-md"
                         alt="Main Image"
                     />
-                    <button
-                        onClick={(e) => { handleSelectImage(data.images[0].id); e.stopPropagation(); }}
-                        className="absolute top-2 sm:top-3 right-2 sm:right-3 p-1 sm:p-1.5 px-2 sm:px-3 cursor-pointer bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition duration-200"
-                    >
-                        <FontAwesomeIcon icon={faTrash} />
-                    </button>
+                    {data?.images?.length > 0 && (
+                        <button
+                            onClick={(e) => { handleSelectImage(images[0].id); e.stopPropagation(); }}
+                            className="absolute top-2 sm:top-3 right-2 sm:right-3 p-1 sm:p-1.5 px-2 sm:px-3 cursor-pointer bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition duration-200"
+                        >
+                            <FontAwesomeIcon icon={faTrash} />
+                        </button>
+                    )}
                 </div>
 
-
                 {images.slice(1, 5).map((img, index) => (
-                    <div key={index} className="relative w-80% h-40">
-                        <img src={img.image} className="w-full h-full object-cover rounded-md" alt={`Image ${index + 1}`} />
-                        {index === 3 && images.length > 5 && (
+                    <div key={img.id} className="relative w-80% h-40">
+                        <img
+                            src={img.image}
+                            className="w-full h-full object-cover rounded-md"
+                            alt={`Image ${index + 1}`}
+                        />
+
+                        {data?.images?.length > 0 && img.id !== -1 && (
+                            <button
+                                onClick={(e) => {
+                                    handleSelectImage(img.id);
+                                    e.stopPropagation();
+                                }}
+                                className="absolute top-2 right-2 p-1 sm:p-1.5 px-2 sm:px-3 cursor-pointer bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition duration-200"
+                            >
+                                <FontAwesomeIcon icon={faTrash} />
+                            </button>
+                        )}
+
+                  
+                        {index === 3 && data?.images?.length > 5 && (
                             <button className="absolute inset-0 bg-gray-300 cursor-pointer flex items-center justify-center text-white text-lg font-bold rounded-md 
-                                transition-all duration-300 ease-in-out hover:bg-gray-400">
+                            transition-all duration-300 ease-in-out hover:bg-gray-400">
                                 Show all photos
                             </button>
                         )}
@@ -160,6 +158,7 @@ const Clinic: React.FC = () => {
                 ))}
             </div>
 
+         
             {toggle && selectedId !== null && (
                 <DeleteModal onCancel={handleCancel} onConfirm={handleDeleteImage} id={selectedId} />
             )}
