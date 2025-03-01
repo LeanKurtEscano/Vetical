@@ -3,14 +3,13 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { getClinicDetails, uploadClinicImage } from "../../services/clinic";
 import { ImageData } from "../../constants/interfaces/ImageInterface";
 import { cleanImageUrl } from "../../utils/images";
-import { faArrowLeft, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoadingAnimation } from "../../components/LoadingAnimation";
 import { deleteClinicImage } from "../../services/clinic";
 import { useState } from "react";
 import useModal from "../../hooks/useModal";
 import DeleteModal from "../../components/DeleteModal";
-
 const Clinic: React.FC = () => {
     const { clinicId } = useParams<{ clinicId?: string }>();
     const [selectedId, setSelectedId] = useState<number | null>(null)
@@ -26,6 +25,9 @@ const Clinic: React.FC = () => {
         enabled: !!clinicId,
         retry: 1,
     });
+
+    console.log(data)
+
 
 
     const deleteMutation = useMutation(deleteClinicImage, {
@@ -61,10 +63,17 @@ const Clinic: React.FC = () => {
         "https://via.placeholder.com/150",
     ];
 
-    const images: string[] = data?.images?.length
-        ? data.images.map((item: ImageData) => cleanImageUrl(item.image))
-        : mockImages;
+    
 
+    const images: ImageData[] = data?.images?.length
+    ? data.images.map((img: ImageData) => ({
+        ...img,
+        image: cleanImageUrl(img.image),
+      }))
+    : mockImages;
+
+    console.log(images)
+  
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -75,6 +84,7 @@ const Clinic: React.FC = () => {
 
     const handleSelectImage = (id: number) => {
         setSelectedId(id);
+        console.log(id);
         toggleModal();
     }
 
@@ -122,13 +132,24 @@ const Clinic: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-3 pl-40 grid-rows-2 gap-2 max-w-6xl w-full">
-                <div className="col-span-1 row-span-2">
-                    <img src={images[0]} className="w-full h-full max-h-[500px] object-cover rounded-md" alt="Main Image" />
+                <div className="col-span-1 row-span-2 relative">
+                    <img
+                        src={images[0].image}
+                        className="w-full h-full max-h-[500px] object-cover rounded-md"
+                        alt="Main Image"
+                    />
+                    <button
+                        onClick={(e) => { handleSelectImage(data.images[0].id); e.stopPropagation(); }}
+                        className="absolute top-2 sm:top-3 right-2 sm:right-3 p-1 sm:p-1.5 px-2 sm:px-3 cursor-pointer bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition duration-200"
+                    >
+                        <FontAwesomeIcon icon={faTrash} />
+                    </button>
                 </div>
 
+
                 {images.slice(1, 5).map((img, index) => (
-                    <div  key={index} className="relative w-80% h-40">
-                        <img src={img} className="w-full h-full object-cover rounded-md" alt={`Image ${index + 1}`} />
+                    <div key={index} className="relative w-80% h-40">
+                        <img src={img.image} className="w-full h-full object-cover rounded-md" alt={`Image ${index + 1}`} />
                         {index === 3 && images.length > 5 && (
                             <button className="absolute inset-0 bg-gray-300 cursor-pointer flex items-center justify-center text-white text-lg font-bold rounded-md 
                                 transition-all duration-300 ease-in-out hover:bg-gray-400">

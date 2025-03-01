@@ -21,6 +21,7 @@ import ManageListings from './sections/Veterinarian/ManageListings';
 import DarkModeCards from './sections/DarkModeCards';
 import Clinic from './sections/Veterinarian/Clinic';
 function App() {
+ 
   return (
     <MyProvider>
       <Main />
@@ -30,8 +31,7 @@ function App() {
 
 const Main: React.FC = () => {
   const { toggleModals, setIsAuthenticated, role } = useMyContext();
-  useTokenHandler();
-
+  useTokenHandler();1
   return (
 
     <>

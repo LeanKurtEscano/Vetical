@@ -36,3 +36,10 @@ export interface ClinicImageData {
   country: "Philippines - PH", */}
  
  
+  export type ImageData = {
+    id: number;
+    image: string;
+    uploaded_at: string;
+    clinic: number;
+  };
+  

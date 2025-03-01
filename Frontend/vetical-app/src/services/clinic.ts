@@ -63,6 +63,6 @@ export const uploadClinicImage = async(id:string, data:FormData) => {
 
 
 export const deleteClinicImage = async(id:number) => {
-  const response = await clinicApi.delete(`/clinic/${id}/`);
+  const response = await clinicApi.delete(`/clinic/image/${id}/`);
   return response;
 }

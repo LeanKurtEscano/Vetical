@@ -79,13 +79,22 @@ def get_clinics_images(request):
         print(f"Error: {e}")
         return Response({"error": str(e)}, status=500)
 
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def delete_clinic_images(request,id):
+    try:
+        clinic_image = ClinicImages.objects.get(id = int(id))
+        clinic_image.delete()
+        
+    except Exception as e: 
+        print(f"{e}")
 
 
 @api_view(["GET", "DELETE"])
 @permission_classes([IsAuthenticated])
 def clinic_detail(request, clinic_id):
     try:
-        clinic = Clinics.objects.get(id=int(clinic_id))
+        clinic = Clinics.objects.get(id=int(clinic_id),veterinarian__user = request.user)
     except Clinics.DoesNotExist:
         return Response({"error": "Clinic not found"}, status=status.HTTP_404_NOT_FOUND)
 
