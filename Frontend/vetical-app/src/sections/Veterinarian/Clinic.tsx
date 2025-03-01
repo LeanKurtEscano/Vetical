@@ -43,8 +43,6 @@ const Clinic: React.FC = () => {
     if (isLoading) return <LoadingAnimation />;
     if (isError || !data) return <p>Error fetching clinic details.</p>;
 
-    const placeholderImage = "https://via.placeholder.com/300?text=No+Image";
-
 
 
     // Process clinic images
@@ -53,7 +51,7 @@ const Clinic: React.FC = () => {
             ...img,
             image: cleanImageUrl(img.image),
         }))
-        : Array(5).fill({ id: -1, image: placeholderImage }); 
+        : []; 
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -110,53 +108,69 @@ const Clinic: React.FC = () => {
 
 
             <div className="grid grid-cols-3 pl-40 grid-rows-2 gap-2 max-w-6xl w-full">
-               
-                <div className="col-span-1 row-span-2 relative">
-                    <img
-                        src={images[0].image}
-                        className="w-full h-full max-h-[500px] object-cover rounded-md"
-                        alt="Main Image"
-                    />
-                    {data?.images?.length > 0 && (
-                        <button
-                            onClick={(e) => { handleSelectImage(images[0].id); e.stopPropagation(); }}
-                            className="absolute top-2 sm:top-3 right-2 sm:right-3 p-1 sm:p-1.5 px-2 sm:px-3 cursor-pointer bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition duration-200"
-                        >
-                            <FontAwesomeIcon icon={faTrash} />
-                        </button>
-                    )}
-                </div>
-
-                {images.slice(1, 5).map((img, index) => (
-                    <div key={img.id} className="relative w-80% h-40">
-                        <img
-                            src={img.image}
-                            className="w-full h-full object-cover rounded-md"
-                            alt={`Image ${index + 1}`}
-                        />
-
-                        {data?.images?.length > 0 && img.id !== -1 && (
-                            <button
-                                onClick={(e) => {
-                                    handleSelectImage(img.id);
-                                    e.stopPropagation();
-                                }}
-                                className="absolute top-2 right-2 p-1 sm:p-1.5 px-2 sm:px-3 cursor-pointer bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition duration-200"
-                            >
-                                <FontAwesomeIcon icon={faTrash} />
-                            </button>
-                        )}
-
-                  
-                        {index === 3 && data?.images?.length > 5 && (
-                            <button className="absolute inset-0 bg-gray-300 cursor-pointer flex items-center justify-center text-white text-lg font-bold rounded-md 
-                            transition-all duration-300 ease-in-out hover:bg-gray-400">
-                                Show all photos
-                            </button>
-                        )}
-                    </div>
-                ))}
+    {/* Main Image or "No Image Available" */}
+    <div className="col-span-1 row-span-2 relative">
+        {images.length === 0 ? (
+            <div className="w-full h-full max-h-[500px] flex items-center justify-center bg-gray-200 text-gray-600 text-xl font-semibold rounded-md">
+                No Image Available
             </div>
+        ) : (
+            <>
+                <img
+                    src={images[0].image}
+                    className="w-full h-full max-h-[500px] object-cover rounded-md"
+                    alt="Main Image"
+                />
+                {data?.images?.length > 0 && (
+                    <button
+                        onClick={(e) => { handleSelectImage(images[0].id); e.stopPropagation(); }}
+                        className="absolute top-2 sm:top-3 right-2 sm:right-3 p-1 sm:p-1.5 px-2 sm:px-3 cursor-pointer bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition duration-200"
+                    >
+                        <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                )}
+            </>
+        )}
+    </div>
+
+  
+    {images.length > 1 ? (
+        images.slice(1, 5).map((img, index) => (
+            <div key={img.id} className="relative w-full h-40">
+                <img
+                    src={img.image}
+                    className="w-full h-full object-cover rounded-md"
+                    alt={`Image ${index + 1}`}
+                />
+                {data?.images?.length > 0 && img.id !== -1 && (
+                    <button
+                        onClick={(e) => {
+                            handleSelectImage(img.id);
+                            e.stopPropagation();
+                        }}
+                        className="absolute top-2 right-2 p-1 sm:p-1.5 px-2 sm:px-3 cursor-pointer bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition duration-200"
+                    >
+                        <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                )}
+                {index === 3 && data?.images?.length > 5 && (
+                    <button className="absolute inset-0 bg-gray-300 cursor-pointer flex items-center justify-center text-white text-lg font-bold rounded-md 
+                    transition-all duration-300 ease-in-out hover:bg-gray-400">
+                        Show all photos
+                    </button>
+                )}
+            </div>
+        ))
+    ) : (
+        /* Show empty placeholders if there are no additional images */
+        [...Array(4)].map((_, index) => (
+            <div key={index} className="w-full h-40 flex items-center justify-center bg-gray-200 text-gray-600 text-lg font-semibold rounded-md">
+                No Image Available
+            </div>
+        ))
+    )}
+</div>
+
 
          
             {toggle && selectedId !== null && (
