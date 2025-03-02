@@ -67,24 +67,7 @@ export const MyProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     is_veterinarian: false
   })
   
-  useEffect(() => {
-    const getDetails = async () => {
-      try {
-        const response = await fetchUserDetails(); 
-        setDetails({
-          email: response.email, 
-          is_veterinarian: response.is_veterinarian
-        }); 
-      } catch (error) {
-        console.error("Error fetching user details:", error);
-      }
-    };
-    if(isAuthenticated){
-      getDetails();
-     
-    }
-    
-  }, [isAuthenticated]);
+  
 
   
 
