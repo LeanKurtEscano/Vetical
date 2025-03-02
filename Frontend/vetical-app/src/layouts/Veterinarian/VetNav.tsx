@@ -8,11 +8,11 @@ import { logOut } from "../../services/auth";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import useRole from "../../hooks/useRole";
-
+import useTokenHandler from "../../hooks/useTokenHandler";
 const VetNav: React.FC = () => {
     const [showDropdown, setShowDropdown] = useState(false);
-    const { setToggleModals, isAuthenticated, setIsAuthenticated, details } = useMyContext();
-
+    const { setToggleModals, isAuthenticated, setIsAuthenticated,setRole } = useMyContext();
+    const { details } = useTokenHandler();
     const [menuOpen, setMenuOpen] = useState(false);
     const toggleDropdown = () => setShowDropdown(!showDropdown);
     const nav = useNavigate();
@@ -40,6 +40,10 @@ const VetNav: React.FC = () => {
                 localStorage.removeItem("access_token");
                 setIsAuthenticated(false);
                 setShowDropdown(false);
+                
+                setRole("User");
+                setTimeout(() => {
+                },2000)
                 nav('/');
             }
 

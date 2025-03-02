@@ -1,12 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { userAuth } from "../services/token";
 import { useMyContext } from "../context/MyContext";
 import { fetchUserDetails } from "../services/auth";
 
 const useTokenHandler = () => {
-  const { setIsAuthenticated, setDetails, isAuthenticated } = useMyContext();
+  const { setIsAuthenticated, setDetails, isAuthenticated, details } = useMyContext();
   const navigate = useNavigate();
+
 
   useEffect(() => {
     const checkStoredToken = async () => {
@@ -50,8 +51,10 @@ const useTokenHandler = () => {
 
     if (isAuthenticated) {
       getDetails();
-    }
+    } 
   }, [isAuthenticated, setDetails]);
+
+  return {  details };
 };
 
 export default useTokenHandler;
